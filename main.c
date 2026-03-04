@@ -1,3 +1,4 @@
+
 #include <stdio.h> 
 #include <stdlib.h>     
 #include <string.h>     
@@ -6,6 +7,8 @@
 #include <netinet/in.h> 
 #include <arpa/inet.h>  
 #include <unistd.h>
+#include <pthread.h>
+
 
 #define MAX_CLIENTS 50
 
@@ -18,6 +21,12 @@ struct sockaddr_in peeraddr;
 struct ctx {
     int clients[MAX_CLIENTS];
     int index;
+}; 
+
+struct hnd_context {
+    int client_fd;
+    int server_fd;
+    char* data; 
 }; 
 
 struct ctx* context; 
@@ -36,6 +45,8 @@ int insert(int fd) {
     
     context->clients[context->index] = fd; 
     context->index++; 
+    
+
     return 0;
 }
 
@@ -73,17 +84,29 @@ int start_http() {
     return socket_fd; 
 }
 
-void handle(int client_fd, int server_fd, char* data) {
+void* handle(void* args) {
     
+    struct hnd_context *handle_context = (struct hnd_context* )args; 
     
-    printf("%s", "polla\n"); 
-    
-    insert(client_fd); 
-    
-    read(client_fd, data, 5000); 
-    
-    printf("%s", data);
+    printf("%d", handle_context->client_fd); 
     fflush(stdout); 
+    
+    
+    insert(handle_context->client_fd); 
+    
+    
+    
+    read(handle_context->client_fd, handle_context->data, 5000); 
+    
+    
+    //printf("%s", handle_context->data);
+    
+    
+    
+    
+    //printf("%s", "polla\n"); 
+    //fflush(stdout); 
+    
     
     
 
@@ -108,14 +131,18 @@ void handle(int client_fd, int server_fd, char* data) {
 "\0";
 
 
-    write(client_fd, res, strlen(res)); 
+    write(handle_context->client_fd, res, strlen(res)); 
     
-    drop_client(client_fd); 
+    
+    drop_client(handle_context->client_fd); 
+    close(handle_context->client_fd); 
 }
 
 int main() {
+    
    init_ctx(); 
    int socket_fd = start_http(); 
+   
    
    char data[5000]; 
    memset(data, 0, sizeof(data)); 
@@ -123,9 +150,23 @@ int main() {
    socklen_t client_len = sizeof(peeraddr); 
 
    while(1) {
+       pthread_t thread; 
+
+       
        int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
-       handle(fd, socket_fd, data); 
-       close(fd); 
+       
+       struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
+       
+       handle_context->client_fd = fd; 
+       handle_context->server_fd = socket_fd; 
+       handle_context->data = &data[0]; 
+       
+    
+       
+       pthread_create(&thread, NULL, &handle, handle_context); 
+       
+       //pthread_join(thread, NULL);
+       //close(fd); 
    }
 
    return 0; 
