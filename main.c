@@ -8,6 +8,7 @@
 #include <arpa/inet.h>  
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/epoll.h>
 
 
 #define MAX_CLIENTS 50
@@ -30,6 +31,8 @@ struct hnd_context {
 }; 
 
 struct ctx* context; 
+
+struct epoll_event event; 
 
 void init_ctx() {
     context = malloc(sizeof(struct ctx));
@@ -88,7 +91,7 @@ void* handle(void* args) {
     
     struct hnd_context *handle_context = (struct hnd_context* )args; 
     
-    printf("%d", handle_context->client_fd); 
+    printf("%s", handle_context->data); 
     fflush(stdout); 
     
     
@@ -148,7 +151,12 @@ int main() {
    memset(data, 0, sizeof(data)); 
    
    socklen_t client_len = sizeof(peeraddr); 
-
+   
+   int e_fd = epoll_create(); 
+   if(epoll_ctl() != 0) {
+       perror("Error in epoll_ctl"); 
+   }
+   /*
    while(1) {
        pthread_t thread; 
 
@@ -168,6 +176,7 @@ int main() {
        //pthread_join(thread, NULL);
        //close(fd); 
    }
+   */
 
    return 0; 
 }
