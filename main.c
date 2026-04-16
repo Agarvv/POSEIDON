@@ -34,6 +34,8 @@ struct ctx* context;
 
 struct epoll_event event; 
 
+struct epoll_event events[10]; 
+
 void init_ctx() {
     context = malloc(sizeof(struct ctx));
     context->index = 0; 
@@ -102,13 +104,13 @@ void* handle(void* args) {
     read(handle_context->client_fd, handle_context->data, 5000); 
     
     
-    //printf("%s", handle_context->data);
+    printf("%s", handle_context->data);
     
     
     
     
-    //printf("%s", "polla\n"); 
-    //fflush(stdout); 
+    printf("%s", "polla\n"); 
+    fflush(stdout); 
     
     
     
@@ -145,17 +147,51 @@ int main() {
     
    init_ctx(); 
    int socket_fd = start_http(); 
+   event.events = EPOLLIN; 
+   event.data.fd = socket_fd; 
    
    
    char data[5000]; 
    memset(data, 0, sizeof(data)); 
    
    socklen_t client_len = sizeof(peeraddr); 
+   struct epoll_event events[10];
    
-   int e_fd = epoll_create(); 
-   if(epoll_ctl() != 0) {
+   int e_fd = epoll_create(1); 
+   if(e_fd == -1) {
+       perror("epollcreate");
+   }
+   
+   if(epoll_ctl(e_fd, EPOLL_CTL_ADD, socket_fd, &event) != 0) {
        perror("Error in epoll_ctl"); 
    }
+   
+   int n = epoll_wait(e_fd, &events, 10, -1);
+   
+   for(int i = 0; i < 10; i++) {
+       if(events[i].data.fd == socket_fd && events[i].events == EPOLLIN) {
+           
+        int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
+       
+       struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
+       
+       handle_context->client_fd = fd; 
+       handle_context->server_fd = socket_fd; 
+       handle_context->data = &data[0]; 
+       
+       handle(handle_context); 
+       }
+   }
+   
+   while(1);
+   
+   
+   
+   
+   
+   
+   
+   
    /*
    while(1) {
        pthread_t thread; 
