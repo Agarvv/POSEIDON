@@ -24,6 +24,18 @@ struct ctx {
     int index;
 }; 
 
+union http_method {
+    char get[4];
+    char post[5]; 
+};
+
+
+struct request {
+    union http_method method; 
+    char* route; 
+    float version; 
+};
+
 struct hnd_context {
     int client_fd;
     int server_fd;
@@ -89,6 +101,10 @@ int start_http() {
     return socket_fd; 
 }
 
+void parse(char* data, struct request *req) {
+    
+}
+
 void* handle(void* args) {
     
     struct hnd_context *handle_context = (struct hnd_context* )args; 
@@ -105,6 +121,8 @@ void* handle(void* args) {
     
     
     printf("%s", handle_context->data);
+    struct request req; 
+    parse(handle_context->data, &req); 
     
     
     
