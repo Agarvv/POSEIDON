@@ -80,11 +80,25 @@ void drop_client(int fd) {
 }
 
 int start_http() {
+    
     ipv4_addr.s_addr = htonl(INADDR_ANY);
-
-    socket_addr.sin_family = AF_INET; 
-    socket_addr.sin_port = htons(atoi(getenv("PORT")));
+    
+    
+    socket_addr.sin_family = AF_INET;
+    int port = 8080;
+    char* env_p = getenv("PORT"); 
+    if(env_p != NULL) {
+        printf("PORT OK"); 
+        fflush(stdout);
+        port = atoi(env_p);
+    }
+    
+    socket_addr.sin_port = htons(port); 
     socket_addr.sin_addr = ipv4_addr;
+    
+    printf("polla enorme\n");
+   fflush(stdout);
+
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     
@@ -106,67 +120,70 @@ void parse(char* data, struct request *req) {
 }
 
 void* handle(void* args) {
-    
-    struct hnd_context *handle_context = (struct hnd_context* )args; 
-    
-    printf("%s", handle_context->data); 
-    fflush(stdout); 
-    
-    
-    insert(handle_context->client_fd); 
-    
-    
-    
-    read(handle_context->client_fd, handle_context->data, 5000); 
-    
-    
+
+    struct hnd_context *handle_context = (struct hnd_context*)args;
+
     printf("%s", handle_context->data);
-    struct request req; 
-    parse(handle_context->data, &req); 
-    
-    
-    
-    
-    
-    
-    
-    
-
-    char res[] =
-"HTTP/1.1 200 OK\r\n"
-"Content-Type: text/html; charset=UTF-8\r\n"
-"Content-Length: 199\r\n"  
-"Connection: close\r\n"
-"\r\n"
-"<!DOCTYPE html>\r\n"
-"<html>\r\n"
-"<head>\r\n"
-"  <meta charset=\"UTF-8\">\r\n"
-"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n"
-"  \r\n"
-"  <title>Pito en C</title>\r\n"
-"</head>\r\n"
-"<body>\r\n"
-"  <h1>human</h1>\r\n"
-"</body>\r\n"
-"</html>\r\n"
-"\0";
-
-    printf("%s", res); 
     fflush(stdout);
-    write(handle_context->client_fd, res, strlen(res)); 
-    
-    
-    drop_client(handle_context->client_fd); 
-    close(handle_context->client_fd); 
+
+    insert(handle_context->client_fd);
+
+    read(handle_context->client_fd, handle_context->data, 5000);
+
+    printf("%s data:", handle_context->data);
+
+    struct request req;
+    parse(handle_context->data, &req);
+
+
+    if (strncmp(handle_context->data, "HEAD", 4) == 0) {
+
+        char head_res[] =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html; charset=UTF-8\r\n"
+        "Connection: close\r\n"
+        "\r\n";
+
+        write(handle_context->client_fd, head_res, strlen(head_res));
+        printf("%s res:", head_res);
+        fflush(stdout);
+    }
+    else if (strncmp(handle_context->data, "GET", 3) == 0) {
+
+        char res[] =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html; charset=UTF-8\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        "<!DOCTYPE html>\r\n"
+        "<html>\r\n"
+        "<head>\r\n"
+        "  <title>Pito en C</title>\r\n"
+        "</head>\r\n"
+        "<body>\r\n"
+        "  <h1>human</h1>\r\n"
+        "</body>\r\n"
+        "</html>\r\n";
+
+        write(handle_context->client_fd, res, strlen(res));
+        printf("%s res:", res);
+        fflush(stdout);
+    }
+
+    drop_client(handle_context->client_fd);
+    close(handle_context->client_fd);
+
+    return NULL;
 }
 
 int main() {
     
    init_ctx(); 
    int socket_fd = start_http(); 
+   
    event.events = EPOLLIN; 
    event.data.fd = socket_fd; 
+   
    
    
    char data[5000]; 
@@ -174,6 +191,7 @@ int main() {
    
    socklen_t client_len = sizeof(peeraddr); 
    struct epoll_event events[10];
+   
    
    int e_fd = epoll_create(1); 
    if(e_fd == -1) {
@@ -184,6 +202,7 @@ int main() {
        perror("Error in epoll_ctl"); 
    }
    
+   while(1) {
    int n = epoll_wait(e_fd, events, 10, -1);
    
    for(int i = 0; i < 10; i++) {
@@ -199,6 +218,7 @@ int main() {
        
        handle(handle_context); 
        }
+   }
    }
    
    while(1);
