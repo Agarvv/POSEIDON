@@ -127,8 +127,7 @@ void* handle(void* args) {
     
     
     
-    printf("%s", handle_context->data); 
-    fflush(stdout); 
+    
     
     
     
@@ -153,7 +152,8 @@ void* handle(void* args) {
 "</html>\r\n"
 "\0";
 
-
+    printf("%s", res); 
+    fflush(stdout);
     write(handle_context->client_fd, res, strlen(res)); 
     
     
