@@ -80,10 +80,10 @@ void drop_client(int fd) {
 }
 
 int start_http() {
-    ipv4_addr.s_addr = htonl(0x7F000001);
+    ipv4_addr.s_addr = htonl(INADDR_ANY);
 
     socket_addr.sin_family = AF_INET; 
-    socket_addr.sin_port = htons(port);
+    socket_addr.sin_port = htons(atoi(getenv("PORT")));
     socket_addr.sin_addr = ipv4_addr;
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -184,7 +184,7 @@ int main() {
        perror("Error in epoll_ctl"); 
    }
    
-   int n = epoll_wait(e_fd, &events, 10, -1);
+   int n = epoll_wait(e_fd, events, 10, -1);
    
    for(int i = 0; i < 10; i++) {
        if(events[i].data.fd == socket_fd && events[i].events == EPOLLIN) {
