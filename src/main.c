@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/epoll.h>
+#include<parse.h>
+#include<worker.h>
 
 
 #define MAX_CLIENTS 50
@@ -22,24 +24,6 @@ struct sockaddr_in peeraddr;
 struct ctx {
     int clients[MAX_CLIENTS];
     int index;
-}; 
-
-union http_method {
-    char get[4];
-    char post[5]; 
-};
-
-
-struct request {
-    union http_method method; 
-    char* route; 
-    float version; 
-};
-
-struct hnd_context {
-    int client_fd;
-    int server_fd;
-    char* data; 
 }; 
 
 struct ctx* context; 
@@ -115,66 +99,6 @@ int start_http() {
     return socket_fd; 
 }
 
-void parse(char* data, struct request *req) {
-    
-}
-
-void* handle(void* args) {
-
-    struct hnd_context *handle_context = (struct hnd_context*)args;
-
-    printf("%s", handle_context->data);
-    fflush(stdout);
-
-    insert(handle_context->client_fd);
-
-    read(handle_context->client_fd, handle_context->data, 5000);
-
-    printf("%s data:", handle_context->data);
-
-    struct request req;
-    parse(handle_context->data, &req);
-
-
-    if (strncmp(handle_context->data, "HEAD", 4) == 0) {
-
-        char head_res[] =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html; charset=UTF-8\r\n"
-        "Connection: close\r\n"
-        "\r\n";
-
-        write(handle_context->client_fd, head_res, strlen(head_res));
-        printf("%s res:", head_res);
-        fflush(stdout);
-    }
-    else if (strncmp(handle_context->data, "GET", 3) == 0) {
-
-        char res[] =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html; charset=UTF-8\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        "<!DOCTYPE html>\r\n"
-        "<html>\r\n"
-        "<head>\r\n"
-        "  <title>Pito en C</title>\r\n"
-        "</head>\r\n"
-        "<body>\r\n"
-        "  <h1>human</h1>\r\n"
-        "</body>\r\n"
-        "</html>\r\n";
-
-        write(handle_context->client_fd, res, strlen(res));
-        printf("%s res:", res);
-        fflush(stdout);
-    }
-
-    drop_client(handle_context->client_fd);
-    close(handle_context->client_fd);
-
-    return NULL;
-}
 
 int main() {
     
@@ -224,33 +148,6 @@ int main() {
    while(1);
    
    
-   
-   
-   
-   
-   
-   
-   /*
-   while(1) {
-       pthread_t thread; 
-
-       
-       int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
-       
-       struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
-       
-       handle_context->client_fd = fd; 
-       handle_context->server_fd = socket_fd; 
-       handle_context->data = &data[0]; 
-       
-    
-       
-       pthread_create(&thread, NULL, &handle, handle_context); 
-       
-       //pthread_join(thread, NULL);
-       //close(fd); 
-   }
-   */
-
+  
    return 0; 
 }
