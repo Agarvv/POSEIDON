@@ -9,9 +9,11 @@
 #include <pthread.h>
 #include <sys/epoll.h>
 
-#include<main.h> 
+
 #include<worker.h>
 #include<parse.h>
+#include<main.h>
+
 
 void handle(void* args) {
 
@@ -28,8 +30,7 @@ void handle(void* args) {
 
     struct request req;
     parse(handle_context->data, &req);
-    printf("Methododd: %s", req.method);
-    printf("%s", "p\n");
+    
 
     if (strncmp(handle_context->data, "HEAD", 4) == 0) {
 

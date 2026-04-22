@@ -11,6 +11,7 @@
 #include <sys/epoll.h>
 #include<parse.h>
 #include<worker.h>
+#include<main.h>
 
 
 #define MAX_CLIENTS 50
@@ -62,6 +63,8 @@ void drop_client(int fd) {
     context->clients[index] = 0; 
     context->index--; 
 }
+
+
 
 int start_http() {
     
