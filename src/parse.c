@@ -15,7 +15,7 @@ int parse(char* data, struct request *req) {
     memcpy(req_l, data, l - data);
     
 
-    req_l[(l - data) + 1] = '/0'; 
+    req_l[(l - data) + 1] = '\0'; 
     printf("%s", req_l);
     printf("%s", "\n THAT WAS REQ LINE\n");
     fflush(stdout);
