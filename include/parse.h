@@ -18,4 +18,4 @@ struct request {
 
 
 
-void parse(char* data, struct request *req);
+int parse(char* data, struct request *req);

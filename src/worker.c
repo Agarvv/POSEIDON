@@ -19,14 +19,14 @@ void handle(void* args) {
 
     struct hnd_context *handle_context = (struct hnd_context*)args;
 
-    printf("%s", handle_context->data);
-    fflush(stdout);
+   // printf("%s", handle_context->data);
+   // fflush(stdout);
 
     insert(handle_context->client_fd);
 
     read(handle_context->client_fd, handle_context->data, 5000);
 
-    printf("%s data:", handle_context->data);
+    //printf("%s data:", handle_context->data);
 
     struct request req;
     parse(handle_context->data, &req);
@@ -41,8 +41,8 @@ void handle(void* args) {
         "\r\n";
 
         write(handle_context->client_fd, head_res, strlen(head_res));
-        printf("%s res:", head_res);
-        fflush(stdout);
+       // printf("%s res:", head_res);
+       // fflush(stdout);
     }
     else if (strncmp(handle_context->data, "GET", 3) == 0) {
 
@@ -62,8 +62,8 @@ void handle(void* args) {
         "</html>\r\n";
 
         write(handle_context->client_fd, res, strlen(res));
-        printf("%s res:", res);
-        fflush(stdout);
+       // printf("%s res:", res);
+       // fflush(stdout);
     }
 
     drop_client(handle_context->client_fd);

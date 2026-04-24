@@ -83,8 +83,8 @@ int start_http() {
     socket_addr.sin_port = htons(port); 
     socket_addr.sin_addr = ipv4_addr;
     
-    printf("polla enorme\n");
-   fflush(stdout);
+    //printf("polla enorme\n");
+  // fflush(stdout);
 
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
