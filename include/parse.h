@@ -1,18 +1,10 @@
 
 
-struct request_line {
+struct request {
     char method[5]; //limited protocol scope... for now
     char* path; 
-    char version[8];
-};
-
-struct http_headers {
+    char version[10];
     
-};
-
-struct request {
-    struct request_line req_line; 
-    struct http_headers headers; 
     char* body;
 };
 

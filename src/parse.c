@@ -16,9 +16,50 @@ int parse(char* data, struct request *req) {
     
 
     req_l[(l - data) + 1] = '\0'; 
-    printf("%s", req_l);
+    
+    /* printf("%s", req_l);
     printf("%s", "\n THAT WAS REQ LINE\n");
     fflush(stdout);
+    */
+    
+    char method[6]; 
+    method[5] = '\0'; 
+    char* m = strchr(data, ' '); 
+    if(m != NULL) {
+        memcpy(method, data, m - data); 
+        memcpy(req->method, method, sizeof(method)); 
+        /* 
+        printf("%s", req->method);
+        
+        printf("\nThat was The Method\n"); 
+        fflush(stdout); 
+        */
+        
+    } else {
+        return 1;
+    }
+    
+    char* p = strchr(m + 1, ' '); 
+    char* path = malloc((p - (m + 1)) + 2);
+    memcpy(path, m + 1, p - (m + 1)); 
+    path[p - (m + 1)] = '\0'; 
+    
+    req->path = path;
+    
+    /*
+    printf("%s", req->path); 
+    printf("\nThat was The PATH\n"); 
+    fflush(stdout); 
+    */
+    
+    
+    char* v = strchr(p + 1, ' '); 
+    memcpy(req->version, v, 8); 
+    req->version[9] = '\0';
+    
+    printf("%s", req->version); 
+    printf("\nThat was The VERSION\n"); 
+    fflush(stdout); 
     
     return 0;
 }
