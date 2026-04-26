@@ -28,12 +28,12 @@ int parse(char* data, struct request *req) {
     if(m != NULL) {
         memcpy(method, data, m - data); 
         memcpy(req->method, method, sizeof(method)); 
-        /* 
+        
         printf("%s", req->method);
         
         printf("\nThat was The Method\n"); 
         fflush(stdout); 
-        */
+        
         
     } else {
         return 1;
@@ -46,20 +46,27 @@ int parse(char* data, struct request *req) {
     
     req->path = path;
     
-    /*
+    
     printf("%s", req->path); 
     printf("\nThat was The PATH\n"); 
     fflush(stdout); 
-    */
     
     
-    char* v = strchr(p + 1, ' '); 
-    memcpy(req->version, v, 8); 
-    req->version[9] = '\0';
+    
+    char* v = strstr(p + 1, "\r\n"); 
+
+    memcpy(req->version, p + 1, v - (p + 1)); 
+    req->version[v - (p + 1)] = '\0';
     
     printf("%s", req->version); 
     printf("\nThat was The VERSION\n"); 
-    fflush(stdout); 
+    fflush(stdout);  
+
+    char* end_of_req_line = l + 1;
+
+    for(int i = 0; i < MAX_H; i++) {
+      char* line = strstr(end_of_req_line, "\r\n");
+    }
     
     return 0;
 }
