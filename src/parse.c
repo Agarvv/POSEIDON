@@ -3,6 +3,62 @@
 #include<string.h>
 #include<stdlib.h>
 
+int parse_header(char* li, struct request *req, int index) {
+    if(li == NULL) {
+        printf("Error\n"); 
+    }
+    
+    char* k = strchr(li, ':'); 
+    
+    
+    if(k == NULL) {
+        printf("Error parse 1\n");
+        return -1; 
+    }
+    
+    //printf("%s", (li - k)); 
+    
+    char* key = malloc((k - li) + 2); 
+
+    if(key == NULL) {
+        perror("error in malloc");
+        return -1; 
+    }
+    
+    
+    key[(li - k) + 1] = '\0'; 
+    memcpy(key, li, (k - li)); 
+    req->headers[index].key = key; 
+    
+    char* v = strstr(li, "\r\n"); 
+    
+    if(v == NULL) {
+        printf("Error parse 3\n");
+        return -1; 
+    }
+    
+    
+    char* value = malloc((k - v) + 2);
+    
+    if(value == NULL) {
+        perror("error in malloc 2");
+        return -1; 
+    }
+    
+    value[(v - k) + 1] = '\0'; 
+    memcpy(value, k + 2, (k - v)); 
+    req->headers[index].value = value; 
+    
+    printf("%s", req->headers[index].value);
+    printf("\n That was the Header Value\n"); 
+    
+    printf("%s", req->headers[index].key);
+    printf("\n That was the Header Key\n"); 
+    
+    
+    return 0; 
+}
+
 int parse(char* data, struct request *req) {
     
     char* l = strstr(data, "\r\n");
@@ -63,9 +119,16 @@ int parse(char* data, struct request *req) {
     fflush(stdout);  
 
     char* end_of_req_line = l + 1;
+    char* li; 
 
     for(int i = 0; i < MAX_H; i++) {
       char* line = strstr(end_of_req_line, "\r\n");
+      
+     
+      parse_header(line, req, i); 
+      printf("%s", "parsing header\n");
+    
+      while(1);
     }
     
     return 0;

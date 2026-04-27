@@ -1,4 +1,11 @@
-#define MAX_H
+#define MAX_H 100
+
+
+struct header {
+    char* key;
+    char* value;
+};
+
 
 struct request {
     char method[5]; //limited protocol scope... for now
@@ -8,9 +15,6 @@ struct request {
     struct header headers[MAX_H];
 };
 
-struct header {
-    char* key;
-    char* value;
-};
 
 int parse(char* data, struct request *req);
+int parse_header(char* li, struct request *req, int index); 
