@@ -32,7 +32,7 @@ void handle(void* args) {
     parse(handle_context->data, &req);
     
 
-    if (strncmp(handle_context->data, "HEAD", 4) == 0) {
+    if (strncmp(req.method, "HEAD", 4) == 0) {
 
         char head_res[] =
         "HTTP/1.1 200 OK\r\n"
@@ -44,8 +44,11 @@ void handle(void* args) {
        // printf("%s res:", head_res);
        // fflush(stdout);
     }
-    else if (strncmp(handle_context->data, "GET", 3) == 0) {
-
+    else if (strncmp(req.method, "GET", 3) == 0) {
+        
+    
+        
+        
         char res[] =
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html; charset=UTF-8\r\n"
