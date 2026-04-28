@@ -13,7 +13,7 @@ int parse_header(char* li, struct request *req, int index) {
     
     if(k == NULL) {
         printf("Error parse 1\n");
-        return -1; 
+        return 1; 
     }
     
     //printf("%s", (li - k)); 
@@ -22,38 +22,38 @@ int parse_header(char* li, struct request *req, int index) {
 
     if(key == NULL) {
         perror("error in malloc");
-        return -1; 
+        return 1; 
     }
     
     
-    key[(li - k) + 1] = '\0'; 
+    key[(k - li) + 1] = '\0'; 
     memcpy(key, li, (k - li)); 
     req->headers[index].key = key; 
     
-    char* v = strstr(li, "\r\n"); 
+    char* v = strstr(k + 1, "\r\n"); 
     
     if(v == NULL) {
         printf("Error parse 3\n");
-        return -1; 
+        return 1; 
     }
     
     
-    char* value = malloc((k - v) + 2);
+    char* value = malloc((v - k) + 2);
     
     if(value == NULL) {
         perror("error in malloc 2");
-        return -1; 
+        return 1; 
     }
     
     value[(v - k) + 1] = '\0'; 
-    memcpy(value, k + 2, (k - v)); 
+    memcpy(value, k + 2, (v - k)); 
     req->headers[index].value = value; 
-    
-    printf("%s", req->headers[index].value);
-    printf("\n That was the Header Value\n"); 
     
     printf("%s", req->headers[index].key);
     printf("\n That was the Header Key\n"); 
+    
+    printf("%s", req->headers[index].value);
+    printf("\n That was the Header Value\n"); 
     
     
     return 0; 
@@ -118,17 +118,24 @@ int parse(char* data, struct request *req) {
     printf("\nThat was The VERSION\n"); 
     fflush(stdout);  
 
-    char* end_of_req_line = l + 1;
+    char* end_of_req_line = l + 2;
     char* li; 
+    
+    char* line = end_of_req_line;
 
     for(int i = 0; i < MAX_H; i++) {
-      char* line = strstr(end_of_req_line, "\r\n");
+      //char* line = strstr(end_of_req_line, "\r\n");
       
-     
-      parse_header(line, req, i); 
+      int p = parse_header(line, req, i); 
+      if(p > 0) {
+	      printf("end of pito\n");
+	      return 0;
+      }
+
       printf("%s", "parsing header\n");
-    
-      while(1);
+
+      line = strstr(line, "\r\n") + 2;
+
     }
     
     return 0;
