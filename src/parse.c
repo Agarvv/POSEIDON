@@ -122,7 +122,8 @@ int parse(char* data, struct request *req) {
     char* li; 
     
     char* line = end_of_req_line;
-
+    
+    req->header_n = 0; 
     for(int i = 0; i < MAX_H; i++) {
       //char* line = strstr(end_of_req_line, "\r\n");
       
@@ -133,9 +134,10 @@ int parse(char* data, struct request *req) {
       }
 
       printf("%s", "parsing header\n");
-
+      
+      req->header_n++;
       line = strstr(line, "\r\n") + 2;
-
+      
     }
     
     return 0;

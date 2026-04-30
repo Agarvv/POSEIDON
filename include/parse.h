@@ -13,6 +13,7 @@ struct request {
     char version[10];
     char* body;
     struct header headers[MAX_H];
+    int header_n;
 };
 
 

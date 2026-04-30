@@ -47,7 +47,42 @@ void handle(void* args) {
     else if (strncmp(req.method, "GET", 3) == 0) {
         
     
+        for(int i = 0; i < req.header_n; i++) {
+            /* if(strncmp(req.headers[i].key, "Connection", 10) == 0) {
+                
+                printf("\n OK 1\n");
+                fflush(stdout);
+                
+                if(strncmp(req.headers[i].value, "Upgrade", 7) == 0) {
+                    
+                    printf("\n OK 2\n");
+                    fflush(stdout);
+                    
         
+                   
+                   
+                    
+                }
+                
+                
+            }
+            */ 
+            if(strncmp(req.headers[i].key, "Upgrade", 7) == 0) {
+                       
+                       printf("\n OK 3\n");
+                       fflush(stdout);
+                       
+                       if(strncmp(req.headers[i].value, "websocket", 7) == 0) {
+                           
+                           printf("\n OK 4\n");
+                          fflush(stdout);
+                          
+                            printf("\nWS\n"); 
+                            fflush(stdout);
+                       
+                       }
+                   }
+        }
         
         char res[] =
         "HTTP/1.1 200 OK\r\n"
