@@ -1,2 +1,2 @@
 
-int ws_handshake(char* swk); 
+char* ws_handshake(char* swk); 

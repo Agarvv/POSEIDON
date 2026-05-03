@@ -16,6 +16,8 @@
 #include<websocket.h>
 
 
+
+
 void handle(void* args) {
     int upgrade = 0;
     char* sec_ws_key;
@@ -68,7 +70,20 @@ void handle(void* args) {
                         }
                     }
                     
-                    ws_handshake(sec_ws_key);
+                   char* ws_s_key =  ws_handshake(sec_ws_key);
+                  
+                   write(handle_context->client_fd,
+"HTTP/1.1 101 Switching Protocols\r\n"
+"Upgrade: websocket\r\n"
+"Connection: Upgrade\r\n"
+"Sec-WebSocket-Accept: ", 97);
+
+fflush(stdout);
+write(handle_context->client_fd, ws_s_key, strlen(ws_s_key));
+
+write(handle_context->client_fd,
+"\r\n\r\n", 4);
+close(handle_context->client_fd);
                     
                 }
             }

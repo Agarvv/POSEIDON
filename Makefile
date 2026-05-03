@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
-CFLAGS += -Iinclude
+CFLAGS += -Iinclude -lcrypto
 SRC_DIR = src
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/app
