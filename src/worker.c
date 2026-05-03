@@ -13,10 +13,12 @@
 #include<worker.h>
 #include<parse.h>
 #include<main.h>
+#include<websocket.h>
 
 
 void handle(void* args) {
     int upgrade = 0;
+    char* sec_ws_key;
 
     struct hnd_context *handle_context = (struct hnd_context*)args;
 
@@ -51,9 +53,22 @@ void handle(void* args) {
         for(int i = 0; i < req.header_n; i++) {
             
             if(upgrade ==  1 && strncmp("Upgrade", req.headers[i].key, 7) == 0) {
-                if(strncmp(req.headers[i].value, "websocket", 6) == 0) {
+                if(strncmp(req.headers[i].value, "websocket", 9) == 0) {
                     printf("\n WS \n");
                     
+                    for(int p = 0; p < req.header_n; p++) {
+                        if(strncmp(req.headers[p].key, "Sec-WebSocket-Key", 17) == 0) {
+                            printf("\n pen\n");
+                            printf("\n %s \n", req.headers[p].value); 
+                            fflush(stdout);
+                            sec_ws_key = req.headers[p].value;
+                        
+                        }else {
+                            printf("\n Pollaaa\n");
+                        }
+                    }
+                    
+                    ws_handshake(sec_ws_key);
                     
                 }
             }
