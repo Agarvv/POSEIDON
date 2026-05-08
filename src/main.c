@@ -12,6 +12,7 @@
 #include<parse.h>
 #include<worker.h>
 #include<main.h>
+#include<palloc.h>
 
 
 #define MAX_CLIENTS 50
@@ -112,8 +113,7 @@ void fork_workers(int socket_fd) {
 }
 
 void worker_event_loop(int socket_fd) {
-    char data[5000]; 
-   memset(data, 0, sizeof(data)); 
+
    
    socklen_t client_len = sizeof(peeraddr); 
    struct epoll_event events[10];
@@ -140,7 +140,7 @@ void worker_event_loop(int socket_fd) {
        
        handle_context->client_fd = fd; 
        handle_context->server_fd = socket_fd; 
-       handle_context->data = &data[0]; 
+       //handle_context->data = &data[0]; 
        
        handle(handle_context); 
        }

@@ -14,15 +14,22 @@
 #include<parse.h>
 #include<main.h>
 #include<websocket.h>
-
+#include<palloc.h>
 
 
 
 void handle(void* args) {
+    struct parena *arena; 
+    pinit(arena); 
+    char* data = palloc(5000, arena); 
+    
+    
     int upgrade = 0;
     char* sec_ws_key;
 
     struct hnd_context *handle_context = (struct hnd_context*)args;
+    handle_context->data = data; 
+    
 
    printf("%s", handle_context->data);
    fflush(stdout);
