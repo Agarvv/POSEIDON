@@ -7,6 +7,6 @@ struct parena {
 };
 
 void* palloc(size_t size, struct parena *arena);
-void* pfree(void* p, struct parena *arena);
+void pfree(void* p, struct parena *arena);
 void pinit(struct parena *arena);
 

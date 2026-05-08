@@ -133,7 +133,8 @@ void worker_event_loop(int socket_fd) {
    
    for(int i = 0; i < 10; i++) {
        if(events[i].data.fd == socket_fd && events[i].events == EPOLLIN) {
-           
+           printf("Hola\n");
+    fflush(stdout); 
         int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
        
        struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
