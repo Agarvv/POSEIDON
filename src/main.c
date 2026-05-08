@@ -102,18 +102,17 @@ int start_http() {
     return socket_fd; 
 }
 
+void fork_workers(int socket_fd) {
+    for(int i = 0; i < 8; i++){
+       int pid = fork(); 
+       if(pid == 0) {
+           worker_event_loop(socket_fd); 
+       }
+   }
+}
 
-int main() {
-    
-   init_ctx(); 
-   int socket_fd = start_http(); 
-   
-   event.events = EPOLLIN; 
-   event.data.fd = socket_fd; 
-   
-   
-   
-   char data[5000]; 
+void worker_event_loop(int socket_fd) {
+    char data[5000]; 
    memset(data, 0, sizeof(data)); 
    
    socklen_t client_len = sizeof(peeraddr); 
@@ -149,8 +148,19 @@ int main() {
    }
    
    while(1);
+}
+
+
+int main() {
+    
+   init_ctx(); 
+   int socket_fd = start_http(); 
    
-   
+   event.events = EPOLLIN; 
+   event.data.fd = socket_fd; 
   
+   fork_workers(socket_fd);
+   
+   while(1);
    return 0; 
 }

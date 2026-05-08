@@ -83,7 +83,7 @@ write(handle_context->client_fd, ws_s_key, strlen(ws_s_key));
 
 write(handle_context->client_fd,
 "\r\n\r\n", 4);
-close(handle_context->client_fd);
+
                     
                 }
             }
@@ -110,6 +110,7 @@ close(handle_context->client_fd);
           
         }
         
+        /*
         char res[] =
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html; charset=UTF-8\r\n"
@@ -124,13 +125,15 @@ close(handle_context->client_fd);
         "  <h1>human</h1>\r\n"
         "</body>\r\n"
         "</html>\r\n";
+        
 
         write(handle_context->client_fd, res, strlen(res));
+        */
        // printf("%s res:", res);
        // fflush(stdout);
     }
 
     drop_client(handle_context->client_fd);
-    close(handle_context->client_fd);
+    // close(handle_context->client_fd);
 
 }

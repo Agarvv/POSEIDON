@@ -58,15 +58,15 @@ char* ws_handshake(char* swk) {
 
    printf("%s ", ws_sec_key); 
    fflush(stdout);
-   while(1);
+   
    
     
     char* base64 = malloc(
-        4 * ((strlen(hash) + 2) / 3) + 1
+        4 * (( 20 + 2) / 3) + 1
     );
 
     
-    EVP_EncodeBlock(base64, hash, strlen(hash)); 
+    EVP_EncodeBlock(base64, hash, 20); 
     
         
     printf("\n %s \n", base64); 
