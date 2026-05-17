@@ -9,12 +9,16 @@ int parse_header(char* li, struct request *req, int index) {
     }
     
     char* k = strchr(li, ':'); 
+    req->headers[index].key = k;
+    req->headers[index].koffset = k - li; 
     
     
     if(k == NULL) {
         printf("Error parse 1\n");
         return 1; 
     }
+    
+    
     
     //printf("%s", (li - k)); 
     

@@ -133,7 +133,7 @@ void worker_event_loop(int socket_fd) {
    
    for(int i = 0; i < 10; i++) {
        if(events[i].data.fd == socket_fd && events[i].events == EPOLLIN) {
-           printf("Hola\n");
+           
     fflush(stdout); 
         int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
        
@@ -142,7 +142,7 @@ void worker_event_loop(int socket_fd) {
        handle_context->client_fd = fd; 
        handle_context->server_fd = socket_fd; 
        //handle_context->data = &data[0]; 
-       
+       printf("Hola\n");
        handle(handle_context); 
        }
    }

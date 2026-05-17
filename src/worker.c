@@ -16,16 +16,27 @@
 #include<websocket.h>
 #include<palloc.h>
 
+void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) {
+    
+}
 
 
 void handle(void* args) {
     struct parena *arena; 
     pinit(arena); 
     char* data = palloc(5000, arena); 
-    
-    
+
     int upgrade = 0;
     char* sec_ws_key;
+    struct pbuffer_chain res_buffer_chain;
+    struct pbuffer_chain_node node; 
+    node.size = 5000;
+    
+    node.p = palloc(5000, arena); 
+    node.next = NULL;
+    
+    res_buffer_chain.head = &node;
+    res_buffer_chain.len = 5000;
 
     struct hnd_context *handle_context = (struct hnd_context*)args;
     handle_context->data = data; 
@@ -35,7 +46,7 @@ void handle(void* args) {
    fflush(stdout);
 
     insert(handle_context->client_fd);
-
+     
     read(handle_context->client_fd, handle_context->data, 5000);
 
     printf("%s data:", handle_context->data);
@@ -43,7 +54,11 @@ void handle(void* args) {
     struct request req;
     parse(handle_context->data, &req);
     
-
+    for(int i = 0; i < req.header_n; i++) {
+        process_header(&res_buffer_chain, &req.headers[i]); 
+    }
+    
+    /*
     if (strncmp(req.method, "HEAD", 4) == 0) {
 
         char head_res[] =
@@ -117,6 +132,15 @@ write(handle_context->client_fd,
           
         }
         
+        
+        */
+        
+        
+        
+        
+        
+        
+        
         /*
         char res[] =
         "HTTP/1.1 200 OK\r\n"
@@ -140,7 +164,7 @@ write(handle_context->client_fd,
        // fflush(stdout);
     }
 
-    drop_client(handle_context->client_fd);
+    ///drop_client(handle_context->client_fd);
     // close(handle_context->client_fd);
 
-}
+
