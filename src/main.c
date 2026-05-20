@@ -13,8 +13,7 @@
 #include<worker.h>
 #include<main.h>
 #include<palloc.h>
-
-
+#define HASH_TABLE_SIZE 2
 #define MAX_CLIENTS 50
 
 struct in_addr ipv4_addr; 
@@ -33,6 +32,26 @@ struct ctx* context;
 struct epoll_event event; 
 
 struct epoll_event events[10]; 
+
+struct htable {
+    char *hname;
+    void (*f)(char * key, char* value);
+};
+
+struct htable htable_entries[] = {
+    {"Connection", handle_connection}
+};
+
+int phhash(char* arg) {
+
+}
+
+void http_hhtable_init() {
+  for(int i = 0; i < sizeof(htable_entries ); i++) {
+    int n = phhash(htable_entries[i].hname); 
+     
+  }
+}
 
 void init_ctx() {
     context = malloc(sizeof(struct ctx));

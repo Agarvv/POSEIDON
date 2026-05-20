@@ -3,6 +3,11 @@
 
 #include "parse.h" 
 
+enum dispatch_table {
+    CONENCTION,
+    HOST
+};
+
 // POSEIDON Buffer Chain Node.
 struct pbuffer_chain_node {
     int size;
@@ -19,5 +24,6 @@ struct pbuffer_chain {
 
 void handle(void* args);
 void process_header(struct pbuffer_chain *buffer_chain, struct header *h);
+void handle_connection();
 
 #endif

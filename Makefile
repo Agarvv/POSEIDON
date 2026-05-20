@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
-CFLAGS += -Iinclude -lcrypto
+CFLAGS = -Wall -Wextra -g -Iinclude
+LDFLAGS = -lcrypto
 SRC_DIR = src
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/app
@@ -12,24 +12,19 @@ OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
 
 all: $(TARGET)
 
-
 $(TARGET): $(OBJ)
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(OBJ) -o $(TARGET)
-
+	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-
 run: $(TARGET)
 	cd $(BUILD_DIR) && ./app
 
-
 run-args: $(TARGET)
 	cd $(BUILD_DIR) && ./app $(ARGS)
-
 
 clean:
 	rm -rf $(BUILD_DIR)
