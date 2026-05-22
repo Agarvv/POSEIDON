@@ -13,7 +13,7 @@
 #include<worker.h>
 #include<main.h>
 #include<palloc.h>
-#define HASH_TABLE_SIZE 2
+#define HSIZE 2
 #define MAX_CLIENTS 50
 
 struct in_addr ipv4_addr; 
@@ -31,26 +31,40 @@ struct ctx* context;
 
 struct epoll_event event; 
 
-struct epoll_event events[10]; 
+struct epoll_event events[10];
 
-struct htable {
-    char *hname;
-    void (*f)(char * key, char* value);
+struct htable htable_entries[2 * HSIZE] = {
+    {"connection", handle_connection},
+    {"content-length", handle_content_length}
 };
 
-struct htable htable_entries[] = {
-    {"Connection", handle_connection}
-};
+int phhash_djb2(char* arg, int index) {
+    unsigned long hash = 5381;
+    int c = 0;
+    
+    for(int i = 0; i < strlen(arg); i++) {
+        printf("%d\n", strlen(arg));
+        fflush(stdout);
 
-int phhash(char* arg) {
+        c = *arg;
+    
+        arg = arg + 1;
+        
+        hash = ((hash << 5) + hash) + c; 
 
+    }
+    
+    
+    return (hash % HSIZE) + HSIZE;
 }
 
 void http_hhtable_init() {
-  for(int i = 0; i < sizeof(htable_entries ); i++) {
-    int n = phhash(htable_entries[i].hname); 
-     
+  for(int i = 0; i < HSIZE; i++) {
+   int n = phhash_djb2(htable_entries[i].hname, i); 
+
+   // htable_entries[n].f = htable_entries[i].f;
   }
+  while(1);
 }
 
 void init_ctx() {
@@ -178,7 +192,9 @@ int main() {
    
    event.events = EPOLLIN; 
    event.data.fd = socket_fd; 
-  
+   
+   http_hhtable_init();
+   while(1);
    fork_workers(socket_fd);
    
    while(1);

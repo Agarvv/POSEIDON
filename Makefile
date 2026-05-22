@@ -14,7 +14,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
+	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)  
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(BUILD_DIR)

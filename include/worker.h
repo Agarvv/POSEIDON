@@ -25,5 +25,6 @@ struct pbuffer_chain {
 void handle(void* args);
 void process_header(struct pbuffer_chain *buffer_chain, struct header *h);
 void handle_connection();
+void handle_content_length();
 
 #endif

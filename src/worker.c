@@ -14,7 +14,13 @@
 #include<websocket.h>
 #include<palloc.h>
 
+void handle_connection() {
+    
+}
 
+void handle_content_length() {
+
+}
 
 void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) {
     
