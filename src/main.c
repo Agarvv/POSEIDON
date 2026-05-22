@@ -13,7 +13,7 @@
 #include<worker.h>
 #include<main.h>
 #include<palloc.h>
-#define HSIZE 2
+#define HSIZE 100
 #define MAX_CLIENTS 50
 
 struct in_addr ipv4_addr; 
@@ -35,17 +35,111 @@ struct epoll_event events[10];
 
 struct htable htable_entries[2 * HSIZE] = {
     {"connection", handle_connection},
-    {"content-length", handle_content_length}
+    {"content-length", handle_content_length},
+    {"accept", handle_accept},
+    {"accept-encoding", handle_accept_encoding},
+    {"accept-language", handle_accept_language},
+    {"accept-charset", handle_accept_charset},
+    {"authorization", handle_authorization},
+    {"cache-control", handle_cache_control},
+    {"cookie", handle_cookie},
+    {"host", handle_host},
+    {"origin", handle_origin},
+    {"referer", handle_referer},
+    {"user-agent", handle_user_agent},
+    {"upgrade", handle_upgrade},
+    {"via", handle_via},
+    {"x-forwarded-for", handle_x_forwarded_for},
+    {"x-requested-with", handle_x_requested_with},
+    {"if-modified-since", handle_if_modified_since},
+    {"if-none-match", handle_if_none_match},
+    {"range", handle_range},
+    {"te", handle_te},
+    {"content-type", handle_content_type},
+    {"content-encoding", handle_content_encoding},
+    {"transfer-encoding", handle_transfer_encoding},
+    {"keep-alive", handle_keep_alive},
+    {"expect", handle_expect},
+    {"pragma", handle_pragma},
+    {"warning", handle_warning},
+    {"age", handle_age},
+    {"etag", handle_etag},
+    {"location", handle_location},
+    {"server", handle_server},
+    {"set-cookie", handle_set_cookie},
+    {"x-powered-by", handle_x_powered_by},
+    {"x-frame-options", handle_x_frame_options},
+    {"x-content-type-options", handle_x_content_type_options},
+    {"x-xss-protection", handle_x_xss_protection},
+    {"strict-transport-security", handle_strict_transport_security},
+    {"content-security-policy", handle_content_security_policy},
+    {"access-control-allow-origin", handle_access_control_allow_origin},
+    {"access-control-allow-methods", handle_access_control_allow_methods},
+    {"access-control-allow-headers", handle_access_control_allow_headers},
+    {"access-control-max-age", handle_access_control_max_age},
+    {"access-control-allow-credentials", handle_access_control_allow_credentials},
+    {"dnt", handle_dnt},
+    {"sec-ch-ua", handle_sec_ch_ua},
+    {"sec-ch-ua-mobile", handle_sec_ch_ua_mobile},
+    {"sec-ch-ua-platform", handle_sec_ch_ua_platform},
+    {"sec-fetch-dest", handle_sec_fetch_dest},
+    {"sec-fetch-mode", handle_sec_fetch_mode},
+    {"sec-fetch-site", handle_sec_fetch_site},
+    {"sec-fetch-user", handle_sec_fetch_user},
+    {"last-modified", handle_last_modified},
+    {"if-match", handle_if_match},
+    {"if-range", handle_if_range},
+    {"if-unmodified-since", handle_if_unmodified_since},
+    {"accept-patch", handle_accept_patch},
+    {"accept-ranges", handle_accept_ranges},
+    {"allow", handle_allow},
+    {"alt-svc", handle_alt_svc},
+    {"date", handle_date},
+    {"retry-after", handle_retry_after},
+    {"vary", handle_vary},
+    {"www-authenticate", handle_www_authenticate},
+    {"proxy-authenticate", handle_proxy_authenticate},
+    {"proxy-authorization", handle_proxy_authorization},
+    {"from", handle_from},
+    {"max-forwards", handle_max_forwards},
+    {"priority", handle_priority},
+    {"tk", handle_tk},
+    {"x-cache", handle_x_cache},
+    {"x-cache-hits", handle_x_cache_hits},
+    {"x-ua-compatible", handle_x_ua_compatible},
+    {"x-csrf-token", handle_x_csrf_token},
+    {"x-idempotency-key", handle_x_idempotency_key},
+    {"x-rate-limit-limit", handle_x_rate_limit_limit},
+    {"x-rate-limit-remaining", handle_x_rate_limit_remaining},
+    {"x-rate-limit-reset", handle_x_rate_limit_reset},
+    {"x-total-count", handle_x_total_count},
+    {"clear-site-data", handle_clear_site_data},
+    {"cross-origin-embedder-policy", handle_cross_origin_embedder_policy},
+    {"cross-origin-opener-policy", handle_cross_origin_opener_policy},
+    {"cross-origin-resource-policy", handle_cross_origin_resource_policy},
+    {"expect-ct", handle_expect_ct},
+    {"feature-policy", handle_feature_policy},
+    {"nela", handle_nela},
+    {"report-to", handle_report_to},
+    {"sourcemap", handle_sourcemap},
+    {"x-dns-prefetch-control", handle_x_dns_prefetch_control},
+    {"x-download-options", handle_x_download_options},
+    {"x-permitted-cross-domain-policies", handle_x_permitted_cross_domain_policies},
+    {"x-redirect-by", handle_x_redirect_by},
+    {"x-request-id", handle_x_request_id},
+    {"x-runtime", handle_x_runtime},
+    {"x-version", handle_x_version},
+    {"x-backend-server", handle_x_backend_server},
+    {"x-forwarded-host", handle_x_forwarded_host},
+    {"x-forwarded-proto", handle_x_forwarded_proto}
 };
 
-int phhash_djb2(char* arg, int index) {
+int phhash_djb2(char* arg) {
     unsigned long hash = 5381;
     int c = 0;
+    int len = strlen(arg); 
     
-    for(int i = 0; i < strlen(arg); i++) {
-        printf("%d\n", strlen(arg));
-        fflush(stdout);
-
+    for(int i = 0; i < len; i++) {
         c = *arg;
     
         arg = arg + 1;
@@ -59,12 +153,19 @@ int phhash_djb2(char* arg, int index) {
 }
 
 void http_hhtable_init() {
-  for(int i = 0; i < HSIZE; i++) {
-   int n = phhash_djb2(htable_entries[i].hname, i); 
+  for(int i = 0; i < 50; i++) {
+      
+   int n = phhash_djb2(htable_entries[i].hname); 
+   
+  
+  printf("%d\n", n);
+  fflush(stdout);
+  
 
-   // htable_entries[n].f = htable_entries[i].f;
+   htable_entries[n].f = htable_entries[i].f;
+ 
   }
-  while(1);
+  
 }
 
 void init_ctx() {
@@ -194,7 +295,7 @@ int main() {
    event.data.fd = socket_fd; 
    
    http_hhtable_init();
-   while(1);
+  
    fork_workers(socket_fd);
    
    while(1);
