@@ -151,18 +151,31 @@ int phhash_djb2(char* str) {
 
 void htable_insert(char* s, void (*f)()) {
     int n = phhash_djb2(s);
+   /*  
+     printf("%dC\n", n);
+        fflush(stdout);
+   */ 
     
-    while(htable_entries[n].f != NULL) {
-        n++;
-    }
+    if(htable_entries[n].f == NULL) {
+          htable_entries[n].f = f;
+    } else {
+       
+        while(htable_entries[n].f != NULL) {
+            n++;
+            if(n == HSIZE * 2) {
+                n = 0; 
+            }
+        }
+    } 
+     
     printf("%d\n", n);
-    fflush(stdout);
-    htable_entries[n].f = f;
+        fflush(stdout);
+     htable_entries[n].f = f;
 }
 
 void http_hhtable_init() {
     
-  for(int i = 0; i < 2 * HSIZE; i++) {
+  for(int i = 99; i < HSIZE; i++) {
         htable_entries[i].f = NULL;
   }
 
