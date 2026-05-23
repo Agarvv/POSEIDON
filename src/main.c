@@ -13,8 +13,7 @@
 #include<worker.h>
 #include<main.h>
 #include<palloc.h>
-#define HSIZE 100
-#define MAX_CLIENTS 50
+
 
 struct in_addr ipv4_addr; 
 in_port_t port = 8080;
@@ -60,7 +59,9 @@ struct htable htable_entries[2 * HSIZE] = {
     {"transfer-encoding", handle_transfer_encoding},
     {"keep-alive", handle_keep_alive},
     {"expect", handle_expect},
+    
     {"pragma", handle_pragma},
+    
     {"warning", handle_warning},
     {"age", handle_age},
     {"etag", handle_etag},
@@ -134,36 +135,41 @@ struct htable htable_entries[2 * HSIZE] = {
     {"x-forwarded-proto", handle_x_forwarded_proto}
 };
 
-int phhash_djb2(char* arg) {
-    unsigned long hash = 5381;
-    int c = 0;
-    int len = strlen(arg); 
-    
-    for(int i = 0; i < len; i++) {
-        c = *arg;
-    
-        arg = arg + 1;
-        
-        hash = ((hash << 5) + hash) + c; 
 
-    }
+int phhash_djb2(char* str) {
     
+    unsigned int hash = 2166136261u;
+    
+    while (*str) {
+        hash ^= (unsigned char)*str;
+        hash *= 16777619u;
+        str++;
+    }
     
     return (hash % HSIZE) + HSIZE;
 }
 
-void http_hhtable_init() {
-  for(int i = 0; i < 50; i++) {
-      
-   int n = phhash_djb2(htable_entries[i].hname); 
-   
-  
-  printf("%d\n", n);
-  fflush(stdout);
-  
+void htable_insert(char* s, void (*f)()) {
+    int n = phhash_djb2(s);
+    
+    while(htable_entries[n].f != NULL) {
+        n++;
+    }
+    printf("%d\n", n);
+    fflush(stdout);
+    htable_entries[n].f = f;
+}
 
-   htable_entries[n].f = htable_entries[i].f;
+void http_hhtable_init() {
+    
+  for(int i = 0; i < 2 * HSIZE; i++) {
+        htable_entries[i].f = NULL;
+  }
+
+  for(int i = 0; i < 98; i++) {
  
+   htable_insert(htable_entries[i].hname, htable_entries[i].f); 
+  
   }
   
 }
