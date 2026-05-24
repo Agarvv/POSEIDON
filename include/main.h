@@ -14,7 +14,7 @@ void htable_insert(char* s, void (*f)());
 
 struct htable {
     char* hname;
-    void (*f)(char * key, char* value);
+    void (*f)();
 };
 
 extern struct htable htable_entries[2 * HSIZE];

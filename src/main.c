@@ -158,6 +158,9 @@ void htable_insert(char* s, void (*f)()) {
     
     if(htable_entries[n].f == NULL) {
           htable_entries[n].f = f;
+          printf("%d\n", n);
+        fflush(stdout);
+        return;
     } else {
        
         while(htable_entries[n].f != NULL) {

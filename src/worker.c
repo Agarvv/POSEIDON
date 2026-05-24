@@ -435,8 +435,8 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) {
     f = htable_entries[n].f;
     f();
     
-    printf("After Call\n");
-    fflush(stdout);
+  //  printf("After Call\n");
+  //  fflush(stdout);
 }
 
 
