@@ -418,25 +418,31 @@ char* toLowerS(char* s) {
 }
 
 void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) { 
-    
+    void (*f)();
     char* l = toLowerS(h->key);
     
     
     int n = phhash_djb2(l);
     
-    void (*f)();
+    if(htable_entries[n].f != NULL) {
+          f = htable_entries[n].f; 
+          f();
+        return;
+    } else {
+    while(htable_entries[n].f == NULL) {
+        printf("%d before\n", n);
+            n++;
+            if(n == HSIZE * 2) {
+                n = 0; 
+            }
+        }
+    }
     
-    /*
-    printf("%d\n", n);
-    printf("%s\n", l);
-    fflush(stdout);
-    */
+    handle_connection();
     
     f = htable_entries[n].f;
     f();
     
-  //  printf("After Call\n");
-  //  fflush(stdout);
 }
 
 
