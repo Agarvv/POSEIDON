@@ -15,396 +15,597 @@
 #include<palloc.h>
 #include<ctype.h>
 
-void handle_connection() { 
-    printf("connection processing\n");
+void handle_host(void)
+{
+    printf("processing host\n");
     fflush(stdout);
 }
-void handle_content_length() { 
-    printf("content-length processing\n");
+
+void handle_connection(void)
+{
+    printf("processing connection\n");
     fflush(stdout);
 }
-void handle_accept() { 
-    printf("accept processing\n");
+
+void handle_content_length(void)
+{
+    printf("processing content-length\n");
     fflush(stdout);
 }
-void handle_accept_encoding() { 
-    printf("accept-encoding processing\n");
+
+void handle_content_type(void)
+{
+    printf("processing content-type\n");
     fflush(stdout);
 }
-void handle_accept_language() { 
-    printf("accept-language processing\n");
+
+void handle_user_agent(void)
+{
+    printf("processing user-agent\n");
     fflush(stdout);
 }
-void handle_accept_charset() { 
-    printf("accept-charset processing\n");
+
+void handle_accept(void)
+{
+    printf("processing accept\n");
     fflush(stdout);
 }
-void handle_authorization() { 
-    printf("authorization processing\n");
+
+void handle_accept_encoding(void)
+{
+    printf("processing accept-encoding\n");
     fflush(stdout);
 }
-void handle_cache_control() { 
-    printf("cache-control processing\n");
+
+void handle_accept_language(void)
+{
+    printf("processing accept-language\n");
     fflush(stdout);
 }
-void handle_cookie() { 
-    printf("cookie processing\n");
+
+void handle_accept_charset(void)
+{
+    printf("processing accept-charset\n");
     fflush(stdout);
 }
-void handle_host() { 
-    printf("host processing\n");
+
+void handle_upgrade(void)
+{
+    printf("processing upgrade\n");
     fflush(stdout);
 }
-void handle_origin() { 
-    printf("origin processing\n");
+
+void handle_upgrade_insecure_requests(void)
+{
+    printf("processing upgrade-insecure-requests\n");
     fflush(stdout);
 }
-void handle_referer() { 
-    printf("referer processing\n");
+
+void handle_websocket_key(void)
+{
+    printf("processing sec-websocket-key\n");
     fflush(stdout);
 }
-void handle_user_agent() { 
-    printf("user-agent processing\n");
+
+void handle_websocket_version(void)
+{
+    printf("processing sec-websocket-version\n");
     fflush(stdout);
 }
-void handle_upgrade() { 
-    printf("upgrade processing\n");
+
+void handle_websocket_protocol(void)
+{
+    printf("processing sec-websocket-protocol\n");
     fflush(stdout);
 }
-void handle_via() { 
-    printf("via processing\n");
+
+void handle_websocket_extensions(void)
+{
+    printf("processing sec-websocket-extensions\n");
     fflush(stdout);
 }
-void handle_x_forwarded_for() { 
-    printf("x-forwarded-for processing\n");
+
+void handle_origin(void)
+{
+    printf("processing origin\n");
     fflush(stdout);
 }
-void handle_x_requested_with() { 
-    printf("x-requested-with processing\n");
+
+void handle_access_control_allow_origin(void)
+{
+    printf("processing access-control-allow-origin\n");
     fflush(stdout);
 }
-void handle_if_modified_since() { 
-    printf("if-modified-since processing\n");
+
+void handle_access_control_allow_methods(void)
+{
+    printf("processing access-control-allow-methods\n");
     fflush(stdout);
 }
-void handle_if_none_match() { 
-    printf("if-none-match processing\n");
+
+void handle_access_control_allow_headers(void)
+{
+    printf("processing access-control-allow-headers\n");
     fflush(stdout);
 }
-void handle_range() { 
-    printf("range processing\n");
+
+void handle_access_control_max_age(void)
+{
+    printf("processing access-control-max-age\n");
     fflush(stdout);
 }
-void handle_te() { 
-    printf("te processing\n");
+
+void handle_access_control_allow_credentials(void)
+{
+    printf("processing access-control-allow-credentials\n");
     fflush(stdout);
 }
-void handle_content_type() { 
-    printf("content-type processing\n");
+
+void handle_cors_preflight(void)
+{
+    printf("processing cors-preflight\n");
     fflush(stdout);
 }
-void handle_content_encoding() { 
-    printf("content-encoding processing\n");
+
+void handle_sec_fetch_dest(void)
+{
+    printf("processing sec-fetch-dest\n");
     fflush(stdout);
 }
-void handle_transfer_encoding() { 
-    printf("transfer-encoding processing\n");
+
+void handle_sec_fetch_mode(void)
+{
+    printf("processing sec-fetch-mode\n");
     fflush(stdout);
 }
-void handle_keep_alive() { 
-    printf("keep-alive processing\n");
+
+void handle_sec_fetch_site(void)
+{
+    printf("processing sec-fetch-site\n");
     fflush(stdout);
 }
-void handle_expect() { 
-    printf("expect processing\n");
+
+void handle_sec_fetch_user(void)
+{
+    printf("processing sec-fetch-user\n");
     fflush(stdout);
 }
-void handle_pragma() { 
-    printf("pragma processing\n");
+
+void handle_cache_control(void)
+{
+    printf("processing cache-control\n");
     fflush(stdout);
 }
-void handle_warning() { 
-    printf("warning processing\n");
+
+void handle_if_modified_since(void)
+{
+    printf("processing if-modified-since\n");
     fflush(stdout);
 }
-void handle_age() { 
-    printf("age processing\n");
+
+void handle_if_none_match(void)
+{
+    printf("processing if-none-match\n");
     fflush(stdout);
 }
-void handle_etag() { 
-    printf("etag processing\n");
+
+void handle_if_match(void)
+{
+    printf("processing if-match\n");
     fflush(stdout);
 }
-void handle_location() { 
-    printf("location processing\n");
+
+void handle_if_unmodified_since(void)
+{
+    printf("processing if-unmodified-since\n");
     fflush(stdout);
 }
-void handle_server() { 
-    printf("server processing\n");
+
+void handle_if_range(void)
+{
+    printf("processing if-range\n");
     fflush(stdout);
 }
-void handle_set_cookie() { 
-    printf("set-cookie processing\n");
+
+void handle_etag(void)
+{
+    printf("processing etag\n");
     fflush(stdout);
 }
-void handle_x_powered_by() { 
-    printf("x-powered-by processing\n");
+
+void handle_pragma(void)
+{
+    printf("processing pragma\n");
     fflush(stdout);
 }
-void handle_x_frame_options() { 
-    printf("x-frame-options processing\n");
+
+void handle_authorization(void)
+{
+    printf("processing authorization\n");
     fflush(stdout);
 }
-void handle_x_content_type_options() { 
-    printf("x-content-type-options processing\n");
+
+void handle_cookie(void)
+{
+    printf("processing cookie\n");
     fflush(stdout);
 }
-void handle_x_xss_protection() { 
-    printf("x-xss-protection processing\n");
+
+void handle_set_cookie(void)
+{
+    printf("processing set-cookie\n");
     fflush(stdout);
 }
-void handle_strict_transport_security() { 
-    printf("strict-transport-security processing\n");
+
+void handle_referer(void)
+{
+    printf("processing referer\n");
     fflush(stdout);
 }
-void handle_content_security_policy() { 
-    printf("content-security-policy processing\n");
+
+void handle_dnt(void)
+{
+    printf("processing dnt\n");
     fflush(stdout);
 }
-void handle_access_control_allow_origin() { 
-    printf("access-control-allow-origin processing\n");
+
+void handle_sec_ch_ua(void)
+{
+    printf("processing sec-ch-ua\n");
     fflush(stdout);
 }
-void handle_access_control_allow_methods() { 
-    printf("access-control-allow-methods processing\n");
+
+void handle_sec_ch_ua_mobile(void)
+{
+    printf("processing sec-ch-ua-mobile\n");
     fflush(stdout);
 }
-void handle_access_control_allow_headers() { 
-    printf("access-control-allow-headers processing\n");
+
+void handle_sec_ch_ua_platform(void)
+{
+    printf("processing sec-ch-ua-platform\n");
     fflush(stdout);
 }
-void handle_access_control_max_age() { 
-    printf("access-control-max-age processing\n");
+
+void handle_content_encoding(void)
+{
+    printf("processing content-encoding\n");
     fflush(stdout);
 }
-void handle_access_control_allow_credentials() { 
-    printf("access-control-allow-credentials processing\n");
+
+void handle_transfer_encoding(void)
+{
+    printf("processing transfer-encoding\n");
     fflush(stdout);
 }
-void handle_dnt() { 
-    printf("dnt processing\n");
+
+void handle_te(void)
+{
+    printf("processing te\n");
     fflush(stdout);
 }
-void handle_sec_ch_ua() { 
-    printf("sec-ch-ua processing\n");
+
+void handle_accept_ranges(void)
+{
+    printf("processing accept-ranges\n");
     fflush(stdout);
 }
-void handle_sec_ch_ua_mobile() { 
-    printf("sec-ch-ua-mobile processing\n");
+
+void handle_range(void)
+{
+    printf("processing range\n");
     fflush(stdout);
 }
-void handle_sec_ch_ua_platform() { 
-    printf("sec-ch-ua-platform processing\n");
+
+void handle_last_modified(void)
+{
+    printf("processing last-modified\n");
     fflush(stdout);
 }
-void handle_sec_fetch_dest() { 
-    printf("sec-fetch-dest processing\n");
+
+void handle_location(void)
+{
+    printf("processing location\n");
     fflush(stdout);
 }
-void handle_sec_fetch_mode() { 
-    printf("sec-fetch-mode processing\n");
+
+void handle_server(void)
+{
+    printf("processing server\n");
     fflush(stdout);
 }
-void handle_sec_fetch_site() { 
-    printf("sec-fetch-site processing\n");
+
+void handle_www_authenticate(void)
+{
+    printf("processing www-authenticate\n");
     fflush(stdout);
 }
-void handle_sec_fetch_user() { 
-    printf("sec-fetch-user processing\n");
+
+void handle_proxy_authenticate(void)
+{
+    printf("processing proxy-authenticate\n");
     fflush(stdout);
 }
-void handle_last_modified() { 
-    printf("last-modified processing\n");
+
+void handle_proxy_authorization(void)
+{
+    printf("processing proxy-authorization\n");
     fflush(stdout);
 }
-void handle_if_match() { 
-    printf("if-match processing\n");
+
+void handle_keep_alive(void)
+{
+    printf("processing keep-alive\n");
     fflush(stdout);
 }
-void handle_if_range() { 
-    printf("if-range processing\n");
+
+void handle_expect(void)
+{
+    printf("processing expect\n");
     fflush(stdout);
 }
-void handle_if_unmodified_since() { 
-    printf("if-unmodified-since processing\n");
+
+void handle_max_forwards(void)
+{
+    printf("processing max-forwards\n");
     fflush(stdout);
 }
-void handle_accept_patch() { 
-    printf("accept-patch processing\n");
+
+void handle_vary(void)
+{
+    printf("processing vary\n");
     fflush(stdout);
 }
-void handle_accept_ranges() { 
-    printf("accept-ranges processing\n");
+
+void handle_retry_after(void)
+{
+    printf("processing retry-after\n");
     fflush(stdout);
 }
-void handle_allow() { 
-    printf("allow processing\n");
+
+void handle_date(void)
+{
+    printf("processing date\n");
     fflush(stdout);
 }
-void handle_alt_svc() { 
-    printf("alt-svc processing\n");
+
+void handle_strict_transport_security(void)
+{
+    printf("processing strict-transport-security\n");
     fflush(stdout);
 }
-void handle_date() { 
-    printf("date processing\n");
+
+void handle_content_security_policy(void)
+{
+    printf("processing content-security-policy\n");
     fflush(stdout);
 }
-void handle_retry_after() { 
-    printf("retry-after processing\n");
+
+void handle_x_frame_options(void)
+{
+    printf("processing x-frame-options\n");
     fflush(stdout);
 }
-void handle_vary() { 
-    printf("vary processing\n");
+
+void handle_x_content_type_options(void)
+{
+    printf("processing x-content-type-options\n");
     fflush(stdout);
 }
-void handle_www_authenticate() { 
-    printf("www-authenticate processing\n");
+
+void handle_x_xss_protection(void)
+{
+    printf("processing x-xss-protection\n");
     fflush(stdout);
 }
-void handle_proxy_authenticate() { 
-    printf("proxy-authenticate processing\n");
+
+void handle_x_powered_by(void)
+{
+    printf("processing x-powered-by\n");
     fflush(stdout);
 }
-void handle_proxy_authorization() { 
-    printf("proxy-authorization processing\n");
+
+void handle_x_requested_with(void)
+{
+    printf("processing x-requested-with\n");
     fflush(stdout);
 }
-void handle_from() { 
-    printf("from processing\n");
+
+void handle_x_forwarded_for(void)
+{
+    printf("processing x-forwarded-for\n");
     fflush(stdout);
 }
-void handle_max_forwards() { 
-    printf("max-forwards processing\n");
+
+void handle_x_forwarded_host(void)
+{
+    printf("processing x-forwarded-host\n");
     fflush(stdout);
 }
-void handle_priority() { 
-    printf("priority processing\n");
+
+void handle_x_forwarded_proto(void)
+{
+    printf("processing x-forwarded-proto\n");
     fflush(stdout);
 }
-void handle_tk() { 
-    printf("tk processing\n");
+
+void handle_x_csrf_token(void)
+{
+    printf("processing x-csrf-token\n");
     fflush(stdout);
 }
-void handle_x_cache() { 
-    printf("x-cache processing\n");
+
+void handle_x_idempotency_key(void)
+{
+    printf("processing x-idempotency-key\n");
     fflush(stdout);
 }
-void handle_x_cache_hits() { 
-    printf("x-cache-hits processing\n");
+
+void handle_x_rate_limit_limit(void)
+{
+    printf("processing x-rate-limit-limit\n");
     fflush(stdout);
 }
-void handle_x_ua_compatible() { 
-    printf("x-ua-compatible processing\n");
+
+void handle_x_rate_limit_remaining(void)
+{
+    printf("processing x-rate-limit-remaining\n");
     fflush(stdout);
 }
-void handle_x_csrf_token() { 
-    printf("x-csrf-token processing\n");
+
+void handle_x_rate_limit_reset(void)
+{
+    printf("processing x-rate-limit-reset\n");
     fflush(stdout);
 }
-void handle_x_idempotency_key() { 
-    printf("x-idempotency-key processing\n");
+
+void handle_early_data(void)
+{
+    printf("processing early-data\n");
     fflush(stdout);
 }
-void handle_x_rate_limit_limit() { 
-    printf("x-rate-limit-limit processing\n");
+
+void handle_sec_gpc(void)
+{
+    printf("processing sec-gpc\n");
     fflush(stdout);
 }
-void handle_x_rate_limit_remaining() { 
-    printf("x-rate-limit-remaining processing\n");
+
+void handle_save_data(void)
+{
+    printf("processing save-data\n");
     fflush(stdout);
 }
-void handle_x_rate_limit_reset() { 
-    printf("x-rate-limit-reset processing\n");
+
+void handle_viewport_width(void)
+{
+    printf("processing viewport-width\n");
     fflush(stdout);
 }
-void handle_x_total_count() { 
-    printf("x-total-count processing\n");
+
+void handle_device_memory(void)
+{
+    printf("processing device-memory\n");
     fflush(stdout);
 }
-void handle_clear_site_data() { 
-    printf("clear-site-data processing\n");
+
+void handle_downlink(void)
+{
+    printf("processing downlink\n");
     fflush(stdout);
 }
-void handle_cross_origin_embedder_policy() { 
-    printf("cross-origin-embedder-policy processing\n");
+
+void handle_ect(void)
+{
+    printf("processing ect\n");
     fflush(stdout);
 }
-void handle_cross_origin_opener_policy() { 
-    printf("cross-origin-opener-policy processing\n");
+
+void handle_rtt(void)
+{
+    printf("processing rtt\n");
     fflush(stdout);
 }
-void handle_cross_origin_resource_policy() { 
-    printf("cross-origin-resource-policy processing\n");
+
+void handle_sec_ch_prefers_color_scheme(void)
+{
+    printf("processing sec-ch-prefers-color-scheme\n");
     fflush(stdout);
 }
-void handle_expect_ct() { 
-    printf("expect-ct processing\n");
+
+void handle_sec_ch_prefers_reduced_motion(void)
+{
+    printf("processing sec-ch-prefers-reduced-motion\n");
     fflush(stdout);
 }
-void handle_feature_policy() { 
-    printf("feature-policy processing\n");
+
+void handle_sec_ch_prefers_reduced_data(void)
+{
+    printf("processing sec-ch-prefers-reduced-data\n");
     fflush(stdout);
 }
-void handle_nela() { 
-    printf("nela processing\n");
+
+void handle_sec_ch_ua_arch(void)
+{
+    printf("processing sec-ch-ua-arch\n");
     fflush(stdout);
 }
-void handle_report_to() { 
-    printf("report-to processing\n");
+
+void handle_sec_ch_ua_model(void)
+{
+    printf("processing sec-ch-ua-model\n");
     fflush(stdout);
 }
-void handle_sourcemap() { 
-    printf("sourcemap processing\n");
+
+void handle_sec_ch_ua_bitness(void)
+{
+    printf("processing sec-ch-ua-bitness\n");
     fflush(stdout);
 }
-void handle_x_dns_prefetch_control() { 
-    printf("x-dns-prefetch-control processing\n");
+
+void handle_sec_ch_ua_full_version(void)
+{
+    printf("processing sec-ch-ua-full-version\n");
     fflush(stdout);
 }
-void handle_x_download_options() { 
-    printf("x-download-options processing\n");
+
+void handle_sec_ch_ua_full_version_list(void)
+{
+    printf("processing sec-ch-ua-full-version-list\n");
     fflush(stdout);
 }
-void handle_x_permitted_cross_domain_policies() { 
-    printf("x-permitted-cross-domain-policies processing\n");
+
+void handle_sec_ch_ua_wow64(void)
+{
+    printf("processing sec-ch-ua-wow64\n");
     fflush(stdout);
 }
-void handle_x_redirect_by() { 
-    printf("x-redirect-by processing\n");
+
+void handle_x_client_data(void)
+{
+    printf("processing x-client-data\n");
     fflush(stdout);
 }
-void handle_x_request_id() { 
-    printf("x-request-id processing\n");
+
+void handle_x_forwarded_port(void)
+{
+    printf("processing x-forwarded-port\n");
     fflush(stdout);
 }
-void handle_x_runtime() { 
-    printf("x-runtime processing\n");
+
+void handle_x_original_forwarded_for(void)
+{
+    printf("processing x-original-forwarded-for\n");
     fflush(stdout);
 }
-void handle_x_version() { 
-    printf("x-version processing\n");
+
+void handle_x_proxy_user_ip(void)
+{
+    printf("processing x-proxy-user-ip\n");
     fflush(stdout);
 }
-void handle_x_backend_server() { 
-    printf("x-backend-server processing\n");
+
+void handle_x_real_ip(void)
+{
+    printf("processing x-real-ip\n");
     fflush(stdout);
 }
-void handle_x_forwarded_host() { 
-    printf("x-forwarded-host processing\n");
+
+void handle_x_uid(void)
+{
+    printf("processing x-uid\n");
     fflush(stdout);
 }
-void handle_x_forwarded_proto() { 
-    printf("x-forwarded-proto processing\n");
+
+void handle_x_wap_profile(void)
+{
+    printf("processing x-wap-profile\n");
+    fflush(stdout);
+}
+
+void handle_x_device_user_agent(void)
+{
+    printf("processing x-device-user-agent\n");
     fflush(stdout);
 }
 
@@ -418,30 +619,32 @@ char* toLowerS(char* s) {
 }
 
 void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) { 
+    
     void (*f)();
     char* l = toLowerS(h->key);
     
     
     int n = phhash_djb2(l);
     
-    if(htable_entries[n].f != NULL) {
-          f = htable_entries[n].f; 
-          f();
-        return;
-    } else {
-    while(htable_entries[n].f == NULL) {
-        printf("%d before\n", n);
-            n++;
-            if(n == HSIZE * 2) {
-                n = 0; 
-            }
+    int len = strlen(l); 
+     
+     
+    while(strncmp(l, htable_entries[n].hname, len) != 0) {
+        n++;
+        
+        if(n >= 200) {
+            n = 0;
         }
     }
     
-    handle_connection();
+    printf("%s\n", htable_entries[n].hname);
+    fflush(stdout);
+    
+
     
     f = htable_entries[n].f;
     f();
+
     
 }
 
