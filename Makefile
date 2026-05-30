@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -Iinclude
+CFLAGS = -Wall -Wextra -g -Iinclude -w
 LDFLAGS = -lcrypto
 SRC_DIR = src
 BUILD_DIR = build
