@@ -34,7 +34,7 @@ struct epoll_event events[10];
 
 struct htable htable_entries[2 * HSIZE] = {
     {"host", handle_host},
-    {"connection", handle_connection},
+    {"connection", handle_connection, "upgrade"},
     {"content-length", handle_content_length},
     {"content-type", handle_content_type},
     {"user-agent", handle_user_agent},
@@ -42,7 +42,7 @@ struct htable htable_entries[2 * HSIZE] = {
     {"accept-encoding", handle_accept_encoding},
     {"accept-language", handle_accept_language},
     {"accept-charset", handle_accept_charset},
-    {"upgrade", handle_upgrade, handle_connection},
+    {"upgrade", handle_upgrade, "connection"},
     {"upgrade-insecure-requests", handle_upgrade_insecure_requests},
     {"sec-websocket-key", handle_websocket_key},
     {"sec-websocket-version", handle_websocket_version},
@@ -148,7 +148,7 @@ int phhash_djb2(char* str) {
     return (hash % HSIZE) + HSIZE;
 }
 
-void htable_insert(char* s, void (*f)(), void (*d)()) {
+void htable_insert(char* s, int (*f)(), char* d) {
     int n = phhash_djb2(s);
    /*  
      printf("%dC\n", n);
@@ -159,8 +159,7 @@ void htable_insert(char* s, void (*f)(), void (*d)()) {
           htable_entries[n].f = f;
           htable_entries[n].hname = s;
           htable_entries[n].d = d; 
-          printf("%d\n", n);
-        fflush(stdout);
+    
         return;
     } else {
        
@@ -175,9 +174,9 @@ void htable_insert(char* s, void (*f)(), void (*d)()) {
     printf("%d\n", n);
         fflush(stdout);
      htable_entries[n].f = f;
-     
-     htable_entries[n].d = d; 
      htable_entries[n].hname = s;
+     htable_entries[n].d = d; 
+     
 }
 
 void http_hhtable_init() {
@@ -188,7 +187,6 @@ void http_hhtable_init() {
 
   for(int i = 0; i < 98; i++) {
  
-     
    htable_insert(htable_entries[i].hname, htable_entries[i].f, htable_entries[i].d); 
   
   }

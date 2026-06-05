@@ -16,613 +16,705 @@
 #include<ctype.h>
 #include<normalize.h> 
 
-void handle_host(struct header h, void(*d)())
+
+int handle_host(struct header h)
 {
     printf("processing host\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_connection(struct header h, void(*d)())
+int handle_connection(struct header h)
 {
     printf("processing connection\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_content_length(struct header h, void(*d)())
+int handle_content_length(struct header h)
 {
     printf("processing content-length\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_content_type(struct header h, void(*d)())
+int handle_content_type(struct header h)
 {
     printf("processing content-type\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_user_agent(struct header h, void(*d)())
+int handle_user_agent(struct header h)
 {
     printf("processing user-agent\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_accept(struct header h, void(*d)())
+int handle_accept(struct header h)
 {
     printf("processing accept\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_accept_encoding(struct header h, void(*d)())
+int handle_accept_encoding(struct header h)
 {
     printf("processing accept-encoding\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_accept_language(struct header h, void(*d)())
+int handle_accept_language(struct header h)
 {
     printf("processing accept-language\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_accept_charset(struct header h, void(*d)())
+int handle_accept_charset(struct header h)
 {
     printf("processing accept-charset\n");
     fflush(stdout);
+    return 0;
 }
 
-
-
-void handle_upgrade(struct header h, void(*d)())
+int handle_upgrade(struct header h)
 {
     printf("processing upgrade\n");
     fflush(stdout);
     
     // if Race Condition...
-    struct header dh; 
-    dh.key = "Connection";
-    dh.value = "Upgrade"; 
+    return -1;
     
-    d(h, NULL);
-    
-    //continue upgrade header processing after Race Condition handled.
+    // else, 
+    // continue upgrade header processing 
+    return 0;
 }
 
-
-
-void handle_upgrade_insecure_requests(struct header h, void(*d)())
+int handle_upgrade_insecure_requests(struct header h)
 {
     printf("processing upgrade-insecure-requests\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_websocket_key(struct header h, void(*d)())
+int handle_websocket_key(struct header h)
 {
     printf("processing sec-websocket-key\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_websocket_version(struct header h, void(*d)())
+int handle_websocket_version(struct header h)
 {
     printf("processing sec-websocket-version\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_websocket_protocol(struct header h, void(*d)())
+int handle_websocket_protocol(struct header h)
 {
     printf("processing sec-websocket-protocol\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_websocket_extensions(struct header h, void(*d)())
+int handle_websocket_extensions(struct header h)
 {
     printf("processing sec-websocket-extensions\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_origin(struct header h, void(*d)())
+int handle_origin(struct header h)
 {
     printf("processing origin\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_access_control_allow_origin(struct header h, void(*d)())
+int handle_access_control_allow_origin(struct header h)
 {
     printf("processing access-control-allow-origin\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_access_control_allow_methods(struct header h, void(*d)())
+int handle_access_control_allow_methods(struct header h)
 {
     printf("processing access-control-allow-methods\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_access_control_allow_headers(struct header h, void(*d)())
+int handle_access_control_allow_headers(struct header h)
 {
     printf("processing access-control-allow-headers\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_access_control_max_age(struct header h, void(*d)())
+int handle_access_control_max_age(struct header h)
 {
     printf("processing access-control-max-age\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_access_control_allow_credentials(struct header h, void(*d)())
+int handle_access_control_allow_credentials(struct header h)
 {
     printf("processing access-control-allow-credentials\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_cors_preflight(struct header h, void(*d)())
+int handle_cors_preflight(struct header h)
 {
     printf("processing cors-preflight\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_fetch_dest(struct header h, void(*d)())
+int handle_sec_fetch_dest(struct header h)
 {
     printf("processing sec-fetch-dest\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_fetch_mode(struct header h, void(*d)())
+int handle_sec_fetch_mode(struct header h)
 {
     printf("processing sec-fetch-mode\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_fetch_site(struct header h, void(*d)())
+int handle_sec_fetch_site(struct header h)
 {
     printf("processing sec-fetch-site\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_fetch_user(struct header h, void(*d)())
+int handle_sec_fetch_user(struct header h)
 {
     printf("processing sec-fetch-user\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_cache_control(struct header h, void(*d)())
+int handle_cache_control(struct header h)
 {
     printf("processing cache-control\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_if_modified_since(struct header h, void(*d)())
+int handle_if_modified_since(struct header h)
 {
     printf("processing if-modified-since\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_if_none_match(struct header h, void(*d)())
+int handle_if_none_match(struct header h)
 {
     printf("processing if-none-match\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_if_match(struct header h, void(*d)())
+int handle_if_match(struct header h)
 {
     printf("processing if-match\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_if_unmodified_since(struct header h, void(*d)())
+int handle_if_unmodified_since(struct header h)
 {
     printf("processing if-unmodified-since\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_if_range(struct header h, void(*d)())
+int handle_if_range(struct header h)
 {
     printf("processing if-range\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_etag(struct header h, void(*d)())
+int handle_etag(struct header h)
 {
     printf("processing etag\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_pragma(struct header h, void(*d)())
+int handle_pragma(struct header h)
 {
     printf("processing pragma\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_authorization(struct header h, void(*d)())
+int handle_authorization(struct header h)
 {
     printf("processing authorization\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_cookie(struct header h, void(*d)())
+int handle_cookie(struct header h)
 {
     printf("processing cookie\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_set_cookie(struct header h, void(*d)())
+int handle_set_cookie(struct header h)
 {
     printf("processing set-cookie\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_referer(struct header h, void(*d)())
+int handle_referer(struct header h)
 {
     printf("processing referer\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_dnt(struct header h, void(*d)())
+int handle_dnt(struct header h)
 {
     printf("processing dnt\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua(struct header h, void(*d)())
+int handle_sec_ch_ua(struct header h)
 {
     printf("processing sec-ch-ua\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_mobile(struct header h, void(*d)())
+int handle_sec_ch_ua_mobile(struct header h)
 {
     printf("processing sec-ch-ua-mobile\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_platform(struct header h, void(*d)())
+int handle_sec_ch_ua_platform(struct header h)
 {
     printf("processing sec-ch-ua-platform\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_content_encoding(struct header h, void(*d)())
+int handle_content_encoding(struct header h)
 {
     printf("processing content-encoding\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_transfer_encoding(struct header h, void(*d)())
+int handle_transfer_encoding(struct header h)
 {
     printf("processing transfer-encoding\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_te(struct header h, void(*d)())
+int handle_te(struct header h)
 {
     printf("processing te\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_accept_ranges(struct header h, void(*d)())
+int handle_accept_ranges(struct header h)
 {
     printf("processing accept-ranges\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_range(struct header h, void(*d)())
+int handle_range(struct header h)
 {
     printf("processing range\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_last_modified(struct header h, void(*d)())
+int handle_last_modified(struct header h)
 {
     printf("processing last-modified\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_location(struct header h, void(*d)())
+int handle_location(struct header h)
 {
     printf("processing location\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_server(struct header h, void(*d)())
+int handle_server(struct header h)
 {
     printf("processing server\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_www_authenticate(struct header h, void(*d)())
+int handle_www_authenticate(struct header h)
 {
     printf("processing www-authenticate\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_proxy_authenticate(struct header h, void(*d)())
+int handle_proxy_authenticate(struct header h)
 {
     printf("processing proxy-authenticate\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_proxy_authorization(struct header h, void(*d)())
+int handle_proxy_authorization(struct header h)
 {
     printf("processing proxy-authorization\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_keep_alive(struct header h, void(*d)())
+int handle_keep_alive(struct header h)
 {
     printf("processing keep-alive\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_expect(struct header h, void(*d)())
+int handle_expect(struct header h)
 {
     printf("processing expect\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_max_forwards(struct header h, void(*d)())
+int handle_max_forwards(struct header h)
 {
     printf("processing max-forwards\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_vary(struct header h, void(*d)())
+int handle_vary(struct header h)
 {
     printf("processing vary\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_retry_after(struct header h, void(*d)())
+int handle_retry_after(struct header h)
 {
     printf("processing retry-after\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_date(struct header h, void(*d)())
+int handle_date(struct header h)
 {
     printf("processing date\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_strict_transport_security(struct header h, void(*d)())
+int handle_strict_transport_security(struct header h)
 {
     printf("processing strict-transport-security\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_content_security_policy(struct header h, void(*d)())
+int handle_content_security_policy(struct header h)
 {
     printf("processing content-security-policy\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_frame_options(struct header h, void(*d)())
+int handle_x_frame_options(struct header h)
 {
     printf("processing x-frame-options\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_content_type_options(struct header h, void(*d)())
+int handle_x_content_type_options(struct header h)
 {
     printf("processing x-content-type-options\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_xss_protection(struct header h, void(*d)())
+int handle_x_xss_protection(struct header h)
 {
     printf("processing x-xss-protection\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_powered_by(struct header h, void(*d)())
+int handle_x_powered_by(struct header h)
 {
     printf("processing x-powered-by\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_requested_with(struct header h, void(*d)())
+int handle_x_requested_with(struct header h)
 {
     printf("processing x-requested-with\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_forwarded_for(struct header h, void(*d)())
+int handle_x_forwarded_for(struct header h)
 {
     printf("processing x-forwarded-for\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_forwarded_host(struct header h, void(*d)())
+int handle_x_forwarded_host(struct header h)
 {
     printf("processing x-forwarded-host\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_forwarded_proto(struct header h, void(*d)())
+int handle_x_forwarded_proto(struct header h)
 {
     printf("processing x-forwarded-proto\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_csrf_token(struct header h, void(*d)())
+int handle_x_csrf_token(struct header h)
 {
     printf("processing x-csrf-token\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_idempotency_key(struct header h, void(*d)())
+int handle_x_idempotency_key(struct header h)
 {
     printf("processing x-idempotency-key\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_rate_limit_limit(struct header h, void(*d)())
+int handle_x_rate_limit_limit(struct header h)
 {
     printf("processing x-rate-limit-limit\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_rate_limit_remaining(struct header h, void(*d)())
+int handle_x_rate_limit_remaining(struct header h)
 {
     printf("processing x-rate-limit-remaining\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_rate_limit_reset(struct header h, void(*d)())
+int handle_x_rate_limit_reset(struct header h)
 {
     printf("processing x-rate-limit-reset\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_early_data(struct header h, void(*d)())
+int handle_early_data(struct header h)
 {
     printf("processing early-data\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_gpc(struct header h, void(*d)())
+int handle_sec_gpc(struct header h)
 {
     printf("processing sec-gpc\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_save_data(struct header h, void(*d)())
+int handle_save_data(struct header h)
 {
     printf("processing save-data\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_viewport_width(struct header h, void(*d)())
+int handle_viewport_width(struct header h)
 {
     printf("processing viewport-width\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_device_memory(struct header h, void(*d)())
+int handle_device_memory(struct header h)
 {
     printf("processing device-memory\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_downlink(struct header h, void(*d)())
+int handle_downlink(struct header h)
 {
     printf("processing downlink\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_ect(struct header h, void(*d)())
+int handle_ect(struct header h)
 {
     printf("processing ect\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_rtt(struct header h, void(*d)())
+int handle_rtt(struct header h)
 {
     printf("processing rtt\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_prefers_color_scheme(struct header h, void(*d)())
+int handle_sec_ch_prefers_color_scheme(struct header h)
 {
     printf("processing sec-ch-prefers-color-scheme\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_prefers_reduced_motion(struct header h, void(*d)())
+int handle_sec_ch_prefers_reduced_motion(struct header h)
 {
     printf("processing sec-ch-prefers-reduced-motion\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_prefers_reduced_data(struct header h, void(*d)())
+int handle_sec_ch_prefers_reduced_data(struct header h)
 {
     printf("processing sec-ch-prefers-reduced-data\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_arch(struct header h, void(*d)())
+int handle_sec_ch_ua_arch(struct header h)
 {
     printf("processing sec-ch-ua-arch\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_model(struct header h, void(*d)())
+int handle_sec_ch_ua_model(struct header h)
 {
     printf("processing sec-ch-ua-model\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_bitness(struct header h, void(*d)())
+int handle_sec_ch_ua_bitness(struct header h)
 {
     printf("processing sec-ch-ua-bitness\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_full_version(struct header h, void(*d)())
+int handle_sec_ch_ua_full_version(struct header h)
 {
     printf("processing sec-ch-ua-full-version\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_full_version_list(struct header h, void(*d)())
+int handle_sec_ch_ua_full_version_list(struct header h)
 {
     printf("processing sec-ch-ua-full-version-list\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_sec_ch_ua_wow64(struct header h, void(*d)())
+int handle_sec_ch_ua_wow64(struct header h)
 {
     printf("processing sec-ch-ua-wow64\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_client_data(struct header h, void(*d)())
+int handle_x_client_data(struct header h)
 {
     printf("processing x-client-data\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_forwarded_port(struct header h, void(*d)())
+int handle_x_forwarded_port(struct header h)
 {
     printf("processing x-forwarded-port\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_original_forwarded_for(struct header h, void(*d)())
+int handle_x_original_forwarded_for(struct header h)
 {
     printf("processing x-original-forwarded-for\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_proxy_user_ip(struct header h, void(*d)())
+int handle_x_proxy_user_ip(struct header h)
 {
     printf("processing x-proxy-user-ip\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_real_ip(struct header h, void(*d)())
+int handle_x_real_ip(struct header h)
 {
     printf("processing x-real-ip\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_uid(struct header h, void(*d)())
+int handle_x_uid(struct header h)
 {
     printf("processing x-uid\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_wap_profile(struct header h, void(*d)())
+int handle_x_wap_profile(struct header h)
 {
     printf("processing x-wap-profile\n");
     fflush(stdout);
+    return 0;
 }
 
-void handle_x_device_user_agent(struct header h, void(*d)())
+int handle_x_device_user_agent(struct header h)
 {
     printf("processing x-device-user-agent\n");
     fflush(stdout);
+    return 0;
 }
-
 
 
 
@@ -644,7 +736,9 @@ char* toLowerS(char* s) {
 
 void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) { 
     
-    void (*f)();
+
+        
+    int (*f)();
     char* l = toLowerS(h->key);
     
     
@@ -652,8 +746,8 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) {
     
     int len = strlen(l); 
      
-     
     while(strncmp(l, htable_entries[n].hname, len) != 0) {
+        
         n++;
         
         if(n >= 200) {
@@ -661,14 +755,25 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h) {
         }
     }
     
+    
+    
     printf("%s\n", htable_entries[n].hname);
     fflush(stdout);
     
 
     
     f = htable_entries[n].f;
-    f(h, htable_entries[n].d);
-
+    
+    int r = f(h);
+    // if Race condition (a header dependent of X arrived AFTER x)
+    if(r == -1) {
+        printf("%s Race Condition.\n", htable_entries[n].d); 
+        fflush(stdout);
+        
+        int dn = phhash_djb2(htable_entries[n].d); 
+        htable_entries[dn].r = 1; 
+        // used by that header handler to handle race condition 
+    }
     
 }
 
@@ -713,8 +818,6 @@ void handle(void* args) {
     parse(handle_context->data, &req);
     
     for(int i = 0; i < req.header_n; i++) {
-        
-        
         process_header(&res_buffer_chain, &req.headers[i]); 
     }
     
