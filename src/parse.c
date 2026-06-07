@@ -49,8 +49,9 @@ int parse_header(char* li, struct request *req, int index) {
         return 1; 
     }
     
-    value[(v - k) + 1] = '\0'; 
-    memcpy(value, k + 2, (v - k)); 
+    value[(v - k) + 2] = '\0'; 
+    // avoid \r\n.
+    memcpy(value, k + 2, ((v - k) - 2)); 
     req->headers[index].value = value; 
     
     printf("%s", req->headers[index].key);

@@ -14,9 +14,10 @@ void htable_insert(char* s, int (*f)(), char* d);
 
 struct htable {
     char* hname;
-    int (*f)();
+    char* (*f)();
     //void (*d)(); 
     char* d; // used when dependencies between headers
+    char* dv; 
     int r; 
 };
 
