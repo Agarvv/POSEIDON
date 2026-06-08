@@ -148,7 +148,8 @@ int phhash_djb2(char* str) {
     return (hash % HSIZE) + HSIZE;
 }
 
-void htable_insert(char* s, int (*f)(), char* d) {
+void htable_insert(char* s, char* (*f)(), char* d) {
+    
     int n = phhash_djb2(s);
    /*  
      printf("%dC\n", n);
@@ -186,6 +187,7 @@ void http_hhtable_init() {
   }
 
   for(int i = 0; i < 98; i++) {
+     
  
    htable_insert(htable_entries[i].hname, htable_entries[i].f, htable_entries[i].d); 
   

@@ -10,7 +10,7 @@ void worker_event_loop(int socket_fd);
 void fork_workers(int socket_fd);
 int phhash_djb2(char* arg);
 void http_hhtable_init();
-void htable_insert(char* s, int (*f)(), char* d);
+void htable_insert(char* s, char* (*f)(), char* d);
 
 struct htable {
     char* hname;

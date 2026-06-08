@@ -33,6 +33,8 @@ char* handle_host(struct header h, struct res_builder *builder, int r, char* dv)
 
 char* handle_connection(struct header *h, struct res_builder *builder, int r, char* dv)
 {
+    printf("Processing Connection\n");
+    fflush(stdout); 
     
     static int ch, uh, kh = 0; 
     
@@ -63,6 +65,15 @@ char* handle_connection(struct header *h, struct res_builder *builder, int r, ch
         printf("Not Suported Connection\n");
         fflush(stdout);
         builder->connection = -1; 
+    }
+    
+    if(dv != NULL) {
+        printf("race.\n");
+        fflush(stdout); 
+        struct header h;
+        h.key = "upgrade";
+        h.value = dv; 
+        handle_upgrade(&h, builder, 0, NULL); 
     }
     
     return NULL;
@@ -123,7 +134,7 @@ char* handle_upgrade(struct header *h, struct res_builder *builder, int r, char*
     printf("processing upgrade\n");
     fflush(stdout);
     
-    /* 
+    
     // if Race Condition...
     if(builder->connection != PCONNECTION_UPGRADE) {
         return h->value;
@@ -147,8 +158,7 @@ char* handle_upgrade(struct header *h, struct res_builder *builder, int r, char*
     // else, 
     // continue upgrade header processing 
     return NULL;
-    */
-    return h->value;
+
 }
 
 char* handle_upgrade_insecure_requests(struct header h, struct res_builder *builder, int r, char* dv)
@@ -162,11 +172,14 @@ char* handle_websocket_key(struct header *h, struct res_builder *builder, int r,
 {
     printf("processing sec-websocket-key\n");
     fflush(stdout);
-
+    
+    if(builder->upgrade == PCONNECTION_UPGRADE_WS) {
     printf("Handling WS Handshake.\n");
     fflush(stdout);
     char* ws_key = ws_handshake(h->value);
     builder->ws_key = ws_key;
+    }
+    
     return NULL;
 }
 
@@ -797,16 +810,17 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
     
         
     char* (*f)();
+    
+    
     char* l = toLowerS(h->key);
+
     
     
     int n = phhash_djb2(l);
+
     
     int len = strlen(l); 
      
-     f = htable_entries[n].f; 
-     f(); 
-     while(1);
     while(strncmp(l, htable_entries[n].hname, len) != 0) {
         
         n++;
@@ -816,20 +830,19 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
         }
     }
     
-    printf("%s\n", htable_entries[n].hname);
-    fflush(stdout);
-    
-    int dn = phhash_djb2(htable_entries[n].d);
 
+    
+    
     
     f = htable_entries[n].f;
     
     char* r = f(h, builder, htable_entries[n].r);
-
+    
 
     if(r != NULL) {
         printf("%s Race Condition.\n", r); 
         fflush(stdout);
+        int dn = phhash_djb2(htable_entries[n].d);
 
         htable_entries[dn].r = 1; 
         htable_entries[dn].dv = r; 
