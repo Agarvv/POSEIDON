@@ -16,13 +16,26 @@
 #include<ctype.h>
 #include<normalize.h> 
 
-int handle_req_line(char* method, char* version, char* body) {
+int handle_req_line(char* method, char* version, char* path, char* body, struct res_builder *builder) {
     int gh = phhash_djb2("GET"); 
-    int ph = phhash_djb2("POST"); 
+    int hh = phhash_djb2("HEAD"); 
     
     int mh = phhash_djb2(method); 
-    
+    if(mh == gh) {
+        builder->method = PMETHOD_GET;
+        printf("GET MY D-");
+        fflush(stdout);
+        // get page.
+    } else if(mh == hh) {
+        builder->method = PMETHOD_HEAD;
+        printf("HEAD MY D-");
+        fflush(stdout);
+    } else {
+        builder->method = -1; 
+    }
+
 }
+
 
 char* handle_host(struct header h, struct res_builder *builder, int r, char* dv)
 {
@@ -896,6 +909,8 @@ void handle(void* args) {
     for(int i = 0; i < req.header_n; i++) {
         process_header(&res_buffer_chain, &req.headers[i], &builder); 
     }
+    
+    handle_req_line(req.method, req.path, req.version, req.body, &builder);
     
     /*
     if (strncmp(req.method, "HEAD", 4) == 0) {

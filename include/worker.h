@@ -147,7 +147,7 @@ char* handle_x_uid(struct header h, struct res_builder *builder, int r, char* dv
 char* handle_x_wap_profile(struct header h, struct res_builder *builder, int r, char* dv);
 char* handle_x_device_user_agent(struct header h, struct res_builder *builder, int r, char* dv);
 
-int handle_req_line(char* method, char* version, char* body);
+int handle_req_line(char* method, char* path, char* version, char* body, struct res_builder *builder);
 
 char* toLowerS(char* s);
 
