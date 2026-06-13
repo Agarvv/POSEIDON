@@ -16,6 +16,14 @@
 #include<ctype.h>
 #include<normalize.h> 
 
+void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
+    
+    node->fsize = node->fsize - q; 
+    node->p[(node->size - node->fsize)] = c;
+    
+    return &(node->p[node->size - node->fsize]); 
+}
+
 int handle_req_line(char* method, char* version, char* path, char* body, struct res_builder *builder) {
     int gh = phhash_djb2("GET"); 
     int hh = phhash_djb2("HEAD"); 
@@ -868,13 +876,14 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
 void handle(void* args) {
     struct parena *arena; 
     pinit(arena); 
-    char* data = palloc(5000, arena); 
+    // char* data = palloc(5000, arena); 
 
     int upgrade = 0;
     char* sec_ws_key;
     struct pbuffer_chain res_buffer_chain;
     struct pbuffer_chain_node node; 
     node.size = 5000;
+    node.fsize = 5000;
     
     node.p = palloc(5000, arena); 
     node.next = NULL;
@@ -883,16 +892,19 @@ void handle(void* args) {
     res_buffer_chain.len = 5000;
 
     struct hnd_context *handle_context = (struct hnd_context*)args;
-    handle_context->data = data; 
+    handle_context->data = node.p; 
     
-   /*
+   
    printf("%s", handle_context->data);
    fflush(stdout);
-   */
+   
 
     insert(handle_context->client_fd);
-     
+    int b = 0; 
+    
+    
     read(handle_context->client_fd, handle_context->data, 5000);
+    
 
     /*
     printf("%s data:", handle_context->data);
@@ -906,119 +918,12 @@ void handle(void* args) {
     
     struct res_builder builder; 
     
+    handle_req_line(req.method, req.path, req.version, req.body, &builder);
+    
     for(int i = 0; i < req.header_n; i++) {
         process_header(&res_buffer_chain, &req.headers[i], &builder); 
     }
-    
-    handle_req_line(req.method, req.path, req.version, req.body, &builder);
-    
-    /*
-    if (strncmp(req.method, "HEAD", 4) == 0) {
 
-        char head_res[] =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html; charset=UTF-8\r\n"
-        "Connection: close\r\n"
-        "\r\n";
-
-        write(handle_context->client_fd, head_res, strlen(head_res));
-       // printf("%s res:", head_res);
-       // fflush(stdout);
+    
     }
-    else if (strncmp(req.method, "GET", 3) == 0) {
-        
-    
-        for(int i = 0; i < req.header_n; i++) {
-            
-            if(upgrade ==  1 && strncmp("Upgrade", req.headers[i].key, 7) == 0) {
-                if(strncmp(req.headers[i].value, "websocket", 9) == 0) {
-                    printf("\n WS \n");
-                    
-                    for(int p = 0; p < req.header_n; p++) {
-                        if(strncmp(req.headers[p].key, "Sec-WebSocket-Key", 17) == 0) {
-                            printf("\n pen\n");
-                            printf("\n %s \n", req.headers[p].value); 
-                            fflush(stdout);
-                            sec_ws_key = req.headers[p].value;
-                        
-                        }else {
-                            printf("\n Pollaaa\n");
-                        }
-                    }
-                    
-                   char* ws_s_key =  ws_handshake(sec_ws_key);
-                  
-                   write(handle_context->client_fd,
-"HTTP/1.1 101 Switching Protocols\r\n"
-"Upgrade: websocket\r\n"
-"Connection: Upgrade\r\n"
-"Sec-WebSocket-Accept: ", 97);
-
-fflush(stdout);
-write(handle_context->client_fd, ws_s_key, strlen(ws_s_key));
-
-write(handle_context->client_fd,
-"\r\n\r\n", 4);
-
-                    
-                }
-            }
-            
-            
-            
-             if(strncmp(req.headers[i].key, "Connection", 10) == 0) {
-                
-                printf("\n OK 1\n");
-                fflush(stdout);
-                
-                if(strncmp(req.headers[i].value, "Upgrade", 7) == 0) {
-                    
-                    printf("\n OK 2\n");
-                    fflush(stdout);
-                    
-                     
-                    upgrade = 1; 
-                }
-                
-                
-            }
-            
-          
-        }
-        
-        
-        */
-        
-        
-        
-        
-        
-        
-        
-        /*
-        char res[] =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html; charset=UTF-8\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        "<!DOCTYPE html>\r\n"
-        "<html>\r\n"
-        "<head>\r\n"
-        "  <title>Pito en C</title>\r\n"
-        "</head>\r\n"
-        "<body>\r\n"
-        "  <h1>human</h1>\r\n"
-        "</body>\r\n"
-        "</html>\r\n";
-        
-
-        write(handle_context->client_fd, res, strlen(res));
-        */
-       // printf("%s res:", res);
-       // fflush(stdout);
-    }
-
-    ///drop_client(handle_context->client_fd);
-    // close(handle_context->client_fd);
-
 

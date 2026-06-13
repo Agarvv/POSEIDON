@@ -20,6 +20,7 @@ enum dispatch_table {
 // POSEIDON Buffer Chain Node.
 struct pbuffer_chain_node {
     int size;
+    int fsize;
     char* p; 
     struct pbuffer_chain_node *next; 
 };
@@ -30,6 +31,8 @@ struct pbuffer_chain {
     struct pbuffer_chain_node *tail; 
     int len; 
 };
+
+void pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q);
 
 struct res_builder {
     int method; 
