@@ -11,6 +11,8 @@ void fork_workers(int socket_fd);
 int phhash_djb2(char* arg);
 void http_hhtable_init();
 void htable_insert(char* s, char* (*f)(), char* d);
+void route(int method, char* path);
+struct pbuffer_chain_node* init_routes();
 
 struct htable {
     char* hname;

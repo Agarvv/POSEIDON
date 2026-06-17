@@ -32,6 +32,11 @@ struct epoll_event event;
 
 struct epoll_event events[10];
 
+struct pbuffer_chain routes_buffer_chain;
+struct parena routes_arena;
+
+struct patricia_tree ptree_routes;
+
 struct htable htable_entries[2 * HSIZE] = {
     {"host", handle_host},
     {"connection", handle_connection, "upgrade"},
@@ -134,6 +139,33 @@ struct htable htable_entries[2 * HSIZE] = {
     {"x-wap-profile", handle_x_wap_profile},
     {"x-device-user-agent", handle_x_device_user_agent}
 };
+
+struct pbuffer_chain_node* init_routes() {
+    pinit(&routes_arena);
+    
+    struct pbuffer_chain_node *head = malloc(sizeof(struct pbuffer_chain_node));
+    
+    struct patricia_tree_node *p = malloc(4096);
+    
+    head->size = 4096;
+    head->fsize = 4096;
+    
+    head->p = p;
+    
+    routes_buffer_chain.head = head; 
+    routes_buffer_chain.tail = NULL;
+    routes_buffer_chain.len = 4096;
+    
+    ptree_routes.root = head; 
+    
+   // root.p.children[a].p.children[b];
+    
+    return head;
+}
+
+void route(int method, char* path) {
+    
+}
 
 int phhash_djb2(char* str) {
     
@@ -314,7 +346,6 @@ void worker_event_loop(int socket_fd) {
 
 
 int main() {
-    
    init_ctx(); 
    int socket_fd = start_http(); 
    
@@ -322,7 +353,9 @@ int main() {
    event.data.fd = socket_fd; 
    
    http_hhtable_init();
-  
+   
+   route(PMETHOD_GET, "/main");
+   
    fork_workers(socket_fd);
    
    while(1);

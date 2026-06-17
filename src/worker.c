@@ -16,12 +16,15 @@
 #include<ctype.h>
 #include<normalize.h> 
 
+
+
 void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
-    
+    /*
     node->fsize = node->fsize - q; 
     node->p[(node->size - node->fsize)] = c;
     
     return &(node->p[node->size - node->fsize]); 
+    */
 }
 
 int handle_req_line(char* method, char* version, char* path, char* body, struct res_builder *builder) {

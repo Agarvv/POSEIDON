@@ -17,6 +17,15 @@ enum dispatch_table {
     HOST
 };
 
+struct patricia_tree_node {
+    void(*handler)();
+    struct pbuffer_chain_node *children;
+};
+
+struct patricia_tree {
+    struct patricia_tree_node *root;
+};
+
 // POSEIDON Buffer Chain Node.
 struct pbuffer_chain_node {
     int size;
@@ -32,7 +41,7 @@ struct pbuffer_chain {
     int len; 
 };
 
-void pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q);
+void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c);
 
 struct res_builder {
     int method; 
