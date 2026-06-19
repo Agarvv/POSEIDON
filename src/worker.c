@@ -16,6 +16,26 @@
 #include<ctype.h>
 #include<normalize.h> 
 
+// this returns a buffer chain with one node of chunk_size capacity.
+struct pbuffer_chain* init_buffer_chain(int chunk_size) {
+    struct parena arena; 
+    pinit(&arena); 
+    
+    struct pbuffer_chain_node bchain_node; 
+    bchain_node.size = chunk_size;
+    bchain_node.fsize = chunk_size; 
+    bchain_node.p = palloc(chunk_size, &arena); 
+    bchain_node.next = NULL; 
+    
+    struct pbuffer_chain bchain; 
+    bchain.head = &bchain_node; 
+    bchain.tail = NULL; 
+    bchain.len = chunk_size;
+    // bchain.arena = &arena;
+    
+    return &bchain; 
+}
+
 
 
 void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
@@ -43,6 +63,7 @@ int handle_req_line(char* method, char* version, char* path, char* body, struct 
         fflush(stdout);
     } else {
         builder->method = -1; 
+        builder->err = 1;
     }
 
 }
@@ -89,6 +110,7 @@ char* handle_connection(struct header *h, struct res_builder *builder, int r, ch
         printf("Not Suported Connection\n");
         fflush(stdout);
         builder->connection = -1; 
+        builder->err = 1;
     }
     
     if(dv != NULL) {
@@ -175,6 +197,7 @@ char* handle_upgrade(struct header *h, struct res_builder *builder, int r, char*
         fflush(stdout);
     } else {
         builder->upgrade == -1; 
+        builder->err = 1;
         printf("Not Suported Upgrade Protocol...\n"); 
         fflush(stdout);
     }
@@ -816,6 +839,26 @@ char* handle_x_device_user_agent(struct header h, struct res_builder *builder, i
     return NULL;
 }
 
+int res(struct res_builder *builder) {
+    int err = 0; 
+    struct res response;
+    struct pbuffer_chain *res_pbuffer_chain = init_buffer_chain(4096);
+    
+    if(builder->err == 1) {
+        pbuffer_chain_write(res_pbuffer_chain, )
+    }
+    
+    switch(builder->method) {
+        case PMETHOD_HEAD:
+            
+            break;
+        case PMETHOD_GET:
+            break;
+        
+        default: 
+             printf("Error\n");
+    }
+}
 
 
 
@@ -926,7 +969,8 @@ void handle(void* args) {
     for(int i = 0; i < req.header_n; i++) {
         process_header(&res_buffer_chain, &req.headers[i], &builder); 
     }
-
+    
+    res(&builder); 
     
     }
 
