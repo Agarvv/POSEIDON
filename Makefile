@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g -Iinclude -w
 LDFLAGS = -lcrypto
+
 SRC_DIR = src
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/app
@@ -14,7 +15,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	mkdir -p $(BUILD_DIR)
-	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)  
+	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(BUILD_DIR)

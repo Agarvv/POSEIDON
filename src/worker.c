@@ -29,13 +29,32 @@ struct pbuffer_chain* init_buffer_chain(int chunk_size) {
     
     struct pbuffer_chain bchain; 
     bchain.head = &bchain_node; 
-    bchain.tail = NULL; 
+    bchain.tail = &bchain_node; 
     bchain.len = chunk_size;
+    bchain.arena = &arena;
     // bchain.arena = &arena;
     
     return &bchain; 
 }
 
+void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
+    int clen = strlen(c); 
+    
+    if((buffer_chain->tail->fsize - clen) < 0) {
+        struct pbuffer_chain_node bchain_node;
+    
+    int bsize = buffer_chain->len; 
+    
+    bchain_node.size = bsize;
+    bchain_node.fsize = bsize; 
+    bchain_node.p = palloc(buffer_chain->len, buffer_chain->arena); 
+    buffer_chain->tail = &bchain_node;
+    }
+    
+    int findex = (buffer_chain->tail->fsize - buffer_chain->tail->size); 
+    
+    strncpy(&(buffer_chain->tail->p[findex]), c, clen);
+}
 
 
 void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
@@ -844,8 +863,10 @@ int res(struct res_builder *builder) {
     struct res response;
     struct pbuffer_chain *res_pbuffer_chain = init_buffer_chain(4096);
     
+
     if(builder->err == 1) {
-        pbuffer_chain_write(res_pbuffer_chain, )
+        pbuffer_chain_write(res_pbuffer_chain, "HTTP 400 Bad Request\r\n");
+        return -1;
     }
     
     switch(builder->method) {

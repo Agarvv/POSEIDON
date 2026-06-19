@@ -39,6 +39,7 @@ struct pbuffer_chain {
     struct pbuffer_chain_node *head; 
     struct pbuffer_chain_node *tail; 
     int len; 
+    struct parena *arena;
 };
 
 void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c);
@@ -162,6 +163,7 @@ char* handle_x_device_user_agent(struct header h, struct res_builder *builder, i
 
 int handle_req_line(char* method, char* path, char* version, char* body, struct res_builder *builder);
 int res(struct res_builder *builder);
+void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c);
 
 char* toLowerS(char* s);
 
