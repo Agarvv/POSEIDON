@@ -39,6 +39,8 @@ struct pbuffer_chain* init_buffer_chain(int chunk_size) {
 
 void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     int clen = strlen(c); 
+    printf("%d", clen);
+    fflush(stdout); 
     
     if((buffer_chain->tail->fsize - clen) < 0) {
         
@@ -53,10 +55,13 @@ void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     buffer_chain->tail = &bchain_node;
     }
     
-    int findex = (buffer_chain->tail->fsize - buffer_chain->tail->size); 
+    int findex = (buffer_chain->tail->size - buffer_chain->tail->fsize); 
+    
     
     strncpy(&(buffer_chain->tail->p[findex]), c, clen);
+    
     buffer_chain->tail->fsize = buffer_chain->tail->fsize - clen;
+    
 }
 
 
@@ -884,10 +889,12 @@ struct pbuffer_chain* res(struct res_builder *builder) {
                     
                         pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 101 Switching Protocols\r\n Connection: Upgrade\r\n Upgrade: websocket\r\n sec-ws-key: ");
                         
-                      pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
-                        
-                        printf(res_pbuffer_chain->head->p);
-                        fflush(stdout);
+                        pbuffer_chain_write(res_pbuffer_chain, "pola");
+
+                    
+
+
+
 
 
                         return res_pbuffer_chain;
@@ -1024,7 +1031,10 @@ void handle(void* args) {
     }
     
     struct pbuffer_chain *rbuffer_chain = res(&builder); 
-    printf("%s", rbuffer_chain->head->p);
+    
+    printf("%s", rbuffer_chain->tail->p);
+    
+    fflush(stdout);
     
     }
 
