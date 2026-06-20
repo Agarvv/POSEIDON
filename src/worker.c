@@ -41,6 +41,8 @@ void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     int clen = strlen(c); 
     
     if((buffer_chain->tail->fsize - clen) < 0) {
+        
+    
         struct pbuffer_chain_node bchain_node;
     
     int bsize = buffer_chain->len; 
@@ -54,6 +56,7 @@ void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     int findex = (buffer_chain->tail->fsize - buffer_chain->tail->size); 
     
     strncpy(&(buffer_chain->tail->p[findex]), c, clen);
+    buffer_chain->tail->fsize = buffer_chain->tail->fsize - clen;
 }
 
 
@@ -130,7 +133,7 @@ char* handle_connection(struct header *h, struct res_builder *builder, int r, ch
         builder->err = 1;
     }
     
-    if(dv != NULL) {
+    if(dv != NULL && r == 1) {
         printf("race.\n");
         fflush(stdout); 
         struct header h;
@@ -200,6 +203,8 @@ char* handle_upgrade(struct header *h, struct res_builder *builder, int r, char*
     
     // if Race Condition...
     if(builder->connection != PCONNECTION_UPGRADE) {
+	printf("Holaaajdkskekdk\n");
+	fflush(stdout);
         return h->value;
     }
     
@@ -873,16 +878,20 @@ struct pbuffer_chain* res(struct res_builder *builder) {
 
         case PMETHOD_GET:
             if(builder->connection == PCONNECTION_UPGRADE) {
+                
                 switch(builder->upgrade) {
                     case PCONNECTION_UPGRADE_WS:
-                        pbuffer_chain_write(res_pbuffer_chain, 
-                            "HTTPPPPP/1.1 101 Switching Protocols\r\n"
-                            "Upgrade: websocket\r\n"
-                            "Connection: Upgrade\r\n"
-                            "Sec-WebSocket-Accept: "); 
-                        pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
-                        pbuffer_chain_write(res_pbuffer_chain, "\r\n\r\n");
+                    
+                        pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 101 Switching Protocols\r\n Connection: Upgrade\r\n Upgrade: websocket\r\n sec-ws-key: ");
+                        
+                      pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
+                        
+                        printf(res_pbuffer_chain->head->p);
+                        fflush(stdout);
+
+
                         return res_pbuffer_chain;
+
 
                     default:
                         printf("Error\n");
