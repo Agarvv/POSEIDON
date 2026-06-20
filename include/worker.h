@@ -162,7 +162,7 @@ char* handle_x_wap_profile(struct header h, struct res_builder *builder, int r, 
 char* handle_x_device_user_agent(struct header h, struct res_builder *builder, int r, char* dv);
 
 int handle_req_line(char* method, char* path, char* version, char* body, struct res_builder *builder);
-int res(struct res_builder *builder);
+struct pbuffer_chain* res(struct res_builder *builder);
 void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c);
 
 char* toLowerS(char* s);

@@ -169,13 +169,16 @@ void route(int method, char* path) {
 
 int phhash_djb2(char* str) {
     
+
     unsigned int hash = 2166136261u;
     
     while (*str) {
+        
         hash ^= (unsigned char)*str;
         hash *= 16777619u;
         str++;
     }
+    
     
     return (hash % HSIZE) + HSIZE;
 }

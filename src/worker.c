@@ -104,14 +104,12 @@ char* handle_connection(struct header *h, struct res_builder *builder, int r, ch
     
     ch = phhash_djb2("Close");
     uh = phhash_djb2("Upgrade");
-    kh = phhash_djb2("Keep-alive");
+    kh = phhash_djb2("keep-alive");
     
     int dh = phhash_djb2(h->value); 
     
     
-    printf("%d\n", "Upgrade");
-    fflush(stdout);
-    
+
     
     if(dh == ch) {
         printf("Close Connection\n");
@@ -208,6 +206,8 @@ char* handle_upgrade(struct header *h, struct res_builder *builder, int r, char*
     
     
     int oh = phhash_djb2(h->value); 
+    printf("POLLA 2 upgrade\n");
+    fflush(stdout);
     int wh = phhash_djb2("websocket"); 
     
     if(oh == wh) {
@@ -858,35 +858,36 @@ char* handle_x_device_user_agent(struct header h, struct res_builder *builder, i
     return NULL;
 }
 
-int res(struct res_builder *builder) {
+struct pbuffer_chain* res(struct res_builder *builder) {
     struct pbuffer_chain *res_pbuffer_chain = init_buffer_chain(4096);
     
     if(builder->err == 1) {
         pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 400 Bad Request\r\n\r\n");
-        return -1;
+        return res_pbuffer_chain;
     }
     
     switch(builder->method) {
         case PMETHOD_HEAD:
             pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 204 No Content\r\n\r\n");
-            return 0;
+            return res_pbuffer_chain;
 
         case PMETHOD_GET:
             if(builder->connection == PCONNECTION_UPGRADE) {
                 switch(builder->upgrade) {
                     case PCONNECTION_UPGRADE_WS:
                         pbuffer_chain_write(res_pbuffer_chain, 
-                            "HTTP/1.1 101 Switching Protocols\r\n"
+                            "HTTPPPPP/1.1 101 Switching Protocols\r\n"
                             "Upgrade: websocket\r\n"
                             "Connection: Upgrade\r\n"
                             "Sec-WebSocket-Accept: "); 
                         pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
                         pbuffer_chain_write(res_pbuffer_chain, "\r\n\r\n");
-                        return 0;
+                        return res_pbuffer_chain;
 
                     default:
                         printf("Error\n");
-                        return -1;
+                        fflush(stdout);
+                        return res_pbuffer_chain;
                 }
             }
 
@@ -894,11 +895,12 @@ int res(struct res_builder *builder) {
                 "HTTP/1.1 404 Not Found\r\n"
                 "Content-Length: 0\r\n"
                 "Connection: close\r\n\r\n");
-            return 0;
+            return res_pbuffer_chain;
         
         default: 
              printf("Error\n");
-             return -1;
+             fflush(stdout);
+             return res_pbuffer_chain;
     }
 }
 
@@ -1012,7 +1014,8 @@ void handle(void* args) {
         process_header(&res_buffer_chain, &req.headers[i], &builder); 
     }
     
-    res(&builder); 
+    struct pbuffer_chain *rbuffer_chain = res(&builder); 
+    printf("%s", rbuffer_chain->head->p);
     
     }
 
