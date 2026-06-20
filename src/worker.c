@@ -859,25 +859,46 @@ char* handle_x_device_user_agent(struct header h, struct res_builder *builder, i
 }
 
 int res(struct res_builder *builder) {
-    int err = 0; 
-    struct res response;
     struct pbuffer_chain *res_pbuffer_chain = init_buffer_chain(4096);
     
-
     if(builder->err == 1) {
-        pbuffer_chain_write(res_pbuffer_chain, "HTTP 400 Bad Request\r\n");
+        pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 400 Bad Request\r\n\r\n");
         return -1;
     }
     
     switch(builder->method) {
         case PMETHOD_HEAD:
-            
-            break;
+            pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 204 No Content\r\n\r\n");
+            return 0;
+
         case PMETHOD_GET:
-            break;
+            if(builder->connection == PCONNECTION_UPGRADE) {
+                switch(builder->upgrade) {
+                    case PCONNECTION_UPGRADE_WS:
+                        pbuffer_chain_write(res_pbuffer_chain, 
+                            "HTTP/1.1 101 Switching Protocols\r\n"
+                            "Upgrade: websocket\r\n"
+                            "Connection: Upgrade\r\n"
+                            "Sec-WebSocket-Accept: "); 
+                        pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
+                        pbuffer_chain_write(res_pbuffer_chain, "\r\n\r\n");
+                        return 0;
+
+                    default:
+                        printf("Error\n");
+                        return -1;
+                }
+            }
+
+            pbuffer_chain_write(res_pbuffer_chain, 
+                "HTTP/1.1 404 Not Found\r\n"
+                "Content-Length: 0\r\n"
+                "Connection: close\r\n\r\n");
+            return 0;
         
         default: 
              printf("Error\n");
+             return -1;
     }
 }
 
