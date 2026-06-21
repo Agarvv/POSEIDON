@@ -21,26 +21,27 @@ struct pbuffer_chain* init_buffer_chain(int chunk_size) {
     struct parena arena; 
     pinit(&arena); 
     
-    struct pbuffer_chain_node bchain_node; 
-    bchain_node.size = chunk_size;
-    bchain_node.fsize = chunk_size; 
-    bchain_node.p = palloc(chunk_size, &arena); 
-    bchain_node.next = NULL; 
+    struct pbuffer_chain_node* bchain_node = palloc(sizeof(struct pbuffer_chain_node), &arena);
     
-    struct pbuffer_chain bchain; 
-    bchain.head = &bchain_node; 
-    bchain.tail = &bchain_node; 
-    bchain.len = chunk_size;
-    bchain.arena = &arena;
+    bchain_node->size = chunk_size;
+    bchain_node->fsize = chunk_size; 
+    bchain_node->p = palloc(chunk_size, &arena); 
+    bchain_node->next = NULL; 
+    
+    struct pbuffer_chain* bchain = palloc(sizeof(struct pbuffer_chain), &arena); 
+    
+    bchain->head = bchain_node; 
+    bchain->tail = bchain_node; 
+    bchain->len = chunk_size;
+    bchain->arena = &arena;
     // bchain.arena = &arena;
     
-    return &bchain; 
+    return bchain; 
 }
 
 void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     int clen = strlen(c); 
-    printf("%d", clen);
-    fflush(stdout); 
+    
     
     if((buffer_chain->tail->fsize - clen) < 0) {
         
@@ -872,7 +873,10 @@ struct pbuffer_chain* res(struct res_builder *builder) {
     struct pbuffer_chain *res_pbuffer_chain = init_buffer_chain(4096);
     
     if(builder->err == 1) {
-        pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 400 Bad Request\r\n\r\n");
+        // pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 400 Bad Request\r\n\r\n");
+        strncpy(res_pbuffer_chain->head->p, "HTTP/1.1 400 Bad Request\r\n\r\n", 33);
+        printf("%s sjdfjwjjr %d\n", res_pbuffer_chain->head->p, res_pbuffer_chain->len); 
+        
         return res_pbuffer_chain;
     }
     
@@ -887,9 +891,14 @@ struct pbuffer_chain* res(struct res_builder *builder) {
                 switch(builder->upgrade) {
                     case PCONNECTION_UPGRADE_WS:
                     
-                        pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 101 Switching Protocols\r\n Connection: Upgrade\r\n Upgrade: websocket\r\n sec-ws-key: ");
+                        pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 101 Switching Protocols\r\n");
+                        pbuffer_chain_write(res_pbuffer_chain, "Connection: Upgrade\r\n");
+                        pbuffer_chain_write(res_pbuffer_chain, "Upgrade: websocket\r\n");
+                        pbuffer_chain_write(res_pbuffer_chain, "Sec-WebSocket-Accept: ");
+                        pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
+                        pbuffer_chain_write(res_pbuffer_chain, "\r\n\r\n");
                         
-                        pbuffer_chain_write(res_pbuffer_chain, "pola");
+                        
 
                     
 
@@ -1032,9 +1041,26 @@ void handle(void* args) {
     
     struct pbuffer_chain *rbuffer_chain = res(&builder); 
     
-    printf("%s", rbuffer_chain->tail->p);
+    printf("write\n");
     
-    fflush(stdout);
+
+    printf("\n========== ASCII DUMP ==========\n");
+printf("Puntero : %p\n", (void *)rbuffer_chain->head->p);
+printf("Bytes:\n");
+for (unsigned char *p = (unsigned char *)rbuffer_chain->head->p; *p; ++p)
+    printf("'%c' -> %3u (0x%02X)\n",
+           (*p >= 32 && *p <= 126) ? *p : '.',
+           *p,
+           *p);
+printf("================================\n\n");
+    
+    
+
+    write(handle_context->client_fd, (rbuffer_chain->head->p), 133 + strlen(builder.ws_key));
+    
+    while(1);
+    
+    // close(handle_context->client_fd);
     
     }
 
