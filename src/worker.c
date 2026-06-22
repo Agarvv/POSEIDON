@@ -1010,7 +1010,7 @@ void handle(void* args) {
     handle_context->data = node.p; 
     
    
-   printf("%s", handle_context->data);
+   printf("%s\n", handle_context->data);
    fflush(stdout);
    
 
@@ -1056,7 +1056,14 @@ printf("================================\n\n");
     
     
 
-    write(handle_context->client_fd, (rbuffer_chain->head->p), 133 + strlen(builder.ws_key));
+    write(handle_context->client_fd, (rbuffer_chain->head->p), strlen("HTTP/1.1 101 Switching Protocols\r\n") + strlen(builder.ws_key) + strlen("Connection: Upgrade\r\n") + strlen("Upgrade: websocket\r\n") + strlen("Sec-WebSocket-Accept: ") + strlen("\r\n\r\n"));
+    
+    unsigned char bytes[4096]; 
+    int bi = read(handle_context->client_fd, bytes, 4096);
+    
+    for(int i = 0; i < bi; i++) {
+        printf("%d\n", bytes[i]);
+    }
     
     while(1);
     
