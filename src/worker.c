@@ -15,6 +15,7 @@
 #include<palloc.h>
 #include<ctype.h>
 #include<normalize.h> 
+#include <sys/uio.h>
 
 // this returns a buffer chain with one node of chunk_size capacity.
 struct pbuffer_chain* init_buffer_chain(int chunk_size) {
@@ -1043,29 +1044,32 @@ void handle(void* args) {
     
     printf("write\n");
     
-
-    printf("\n========== ASCII DUMP ==========\n");
-printf("Puntero : %p\n", (void *)rbuffer_chain->head->p);
-printf("Bytes:\n");
-for (unsigned char *p = (unsigned char *)rbuffer_chain->head->p; *p; ++p)
-    printf("'%c' -> %3u (0x%02X)\n",
-           (*p >= 32 && *p <= 126) ? *p : '.',
-           *p,
-           *p);
-printf("================================\n\n");
+    // current node
+    struct pbuffer_chain_node *in_node;
+    struct pbuffer_chain_node *cnode;
     
+    cnode = rbuffer_chain->head;
+    in_node = rbuffer_chain->head;
+    int bc = 0; 
     
-
-    write(handle_context->client_fd, (rbuffer_chain->head->p), strlen("HTTP/1.1 101 Switching Protocols\r\n") + strlen(builder.ws_key) + strlen("Connection: Upgrade\r\n") + strlen("Upgrade: websocket\r\n") + strlen("Sec-WebSocket-Accept: ") + strlen("\r\n\r\n"));
-    
-    unsigned char bytes[4096]; 
-    int bi = read(handle_context->client_fd, bytes, 4096);
-    
-    for(int i = 0; i < bi; i++) {
-        printf("%d\n", bytes[i]);
+    while(cnode->fsize > 0) {
+        bc++;
+        cnode = cnode->next;
     }
     
-    while(1);
+    printf("wridbte %s\n", cnode->p);
+    
+    struct iovec iovc[bc]; 
+    for(int i = 0; i < bc; i++) {
+        iovc[i].iov_base = in_node->p; 
+        printf("jwiej %s\n ", in_node->p);
+        iovc[i].iov_len = in_node->size;
+        in_node = in_node->next; 
+        
+    }
+    
+    writev(handle_context->client_fd, iovc, bc);
+    f
     
     // close(handle_context->client_fd);
     
