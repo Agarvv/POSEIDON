@@ -1042,34 +1042,54 @@ void handle(void* args) {
     
     struct pbuffer_chain *rbuffer_chain = res(&builder); 
     
-    printf("write\n");
+    
     
     // current node
     struct pbuffer_chain_node *in_node;
     struct pbuffer_chain_node *cnode;
     
+    
     cnode = rbuffer_chain->head;
     in_node = rbuffer_chain->head;
     int bc = 0; 
     
+    
+    
     while(cnode->fsize > 0) {
+    
         bc++;
+        
+        if(cnode->next == NULL) {
+            break; 
+        }
+        
         cnode = cnode->next;
-    }
-    
-    printf("wridbte %s\n", cnode->p);
-    
-    struct iovec iovc[bc]; 
-    for(int i = 0; i < bc; i++) {
-        iovc[i].iov_base = in_node->p; 
-        printf("jwiej %s\n ", in_node->p);
-        iovc[i].iov_len = in_node->size;
-        in_node = in_node->next; 
         
     }
     
+    
+    
+    struct iovec iovc[bc]; 
+    
+    
+    for(int i = 0; i < bc; i++) {
+        
+        iovc[i].iov_base = in_node->p; 
+    
+        iovc[i].iov_len = in_node->size - in_node->fsize;
+        
+        if(in_node-> next != NULL) {
+        in_node = in_node->next; 
+        }
+    }
+
+    
+    
+    
+    printf("hola\n");
+    printf("hsoek %s \n", iovc[0].iov_base);
     writev(handle_context->client_fd, iovc, bc);
-    f
+    
     
     // close(handle_context->client_fd);
     
