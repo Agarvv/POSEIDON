@@ -21,11 +21,6 @@ in_port_t port = 8080;
 struct sockaddr_in socket_addr; 
 struct sockaddr_in peeraddr; 
 
-struct ctx {
-    int clients[MAX_CLIENTS];
-    int index;
-}; 
-
 struct ctx* context; 
 
 struct epoll_event event; 
@@ -235,6 +230,7 @@ void init_ctx() {
     context->index = 0; 
 }
 
+/* 
 int insert(int fd) {
     int index = context->index; 
     
@@ -261,7 +257,7 @@ void drop_client(int fd) {
     context->index--; 
 }
 
-
+*/
 
 int start_http() {
     
@@ -280,9 +276,6 @@ int start_http() {
     socket_addr.sin_port = htons(port); 
     socket_addr.sin_addr = ipv4_addr;
     
-    //printf("polla enorme\n");
-  // fflush(stdout);
-
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     
@@ -310,6 +303,7 @@ void fork_workers(int socket_fd) {
 
 void worker_event_loop(int socket_fd) {
 
+   struct ctx pcontext; 
    
    socklen_t client_len = sizeof(peeraddr); 
    struct epoll_event events[10];
@@ -329,17 +323,29 @@ void worker_event_loop(int socket_fd) {
    
    for(int i = 0; i < 10; i++) {
        if(events[i].data.fd == socket_fd && events[i].events == EPOLLIN) {
-           
-    fflush(stdout); 
+        
+        
         int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
+        
+        struct client cl; 
+        cl.protocol = PPROTOCOL_HTTP11; 
+        
+        
+        pcontext.clients[fd - 3] = cl; 
+        
        
        struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
        
+       handle_context->cl = &cl; 
        handle_context->client_fd = fd; 
        handle_context->server_fd = socket_fd; 
        //handle_context->data = &data[0]; 
        printf("Hola\n");
+       if(cl.protocol == PPROTOCOL_HTTP11) {
        handle(handle_context); 
+       } else {
+           printf("WS\n");
+       }
        }
    }
    }
