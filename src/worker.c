@@ -83,14 +83,15 @@ int handle_req_line(char* method, char* version, char* path, char* body, struct 
     int mh = phhash_djb2(method); 
     if(mh == gh) {
         builder->method = PMETHOD_GET;
-        printf("GET MY D-");
+        printf("GET MY D-\n");
         fflush(stdout);
         // get page.
     } else if(mh == hh) {
         builder->method = PMETHOD_HEAD;
-        printf("HEAD MY D-");
+        printf("HEAD MY D-\n");
         fflush(stdout);
     } else {
+        printf("ZZZ MY D-\n");
         builder->method = -1; 
         builder->err = 1;
     }
@@ -871,6 +872,7 @@ char* handle_x_device_user_agent(struct header h, struct res_builder *builder, i
 struct pbuffer_chain* res(struct res_builder *builder, struct hnd_context* handle_context) {
     struct pbuffer_chain *res_pbuffer_chain = init_buffer_chain(4096);
     
+    
     if(builder->err == 1) {
         // pbuffer_chain_write(res_pbuffer_chain, "HTTP/1.1 400 Bad Request\r\n\r\n");
         strncpy(res_pbuffer_chain->head->p, "HTTP/1.1 400 Bad Request\r\n\r\n", 33);
@@ -878,6 +880,8 @@ struct pbuffer_chain* res(struct res_builder *builder, struct hnd_context* handl
         
         return res_pbuffer_chain;
     }
+
+    
     
     switch(builder->method) {
         case PMETHOD_HEAD:
@@ -1034,8 +1038,12 @@ void handle(void* args) {
     parse(handle_context->data, &req);
     
     struct res_builder builder; 
+    builder.err = 0;
     
     handle_req_line(req.method, req.path, req.version, req.body, &builder);
+    
+    
+
     
     printf("antes djejdj\n");
     

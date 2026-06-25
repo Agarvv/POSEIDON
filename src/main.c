@@ -319,13 +319,33 @@ void worker_event_loop(int socket_fd) {
    }
    
    while(1) {
+       printf("Sleeping\n");
    int n = epoll_wait(e_fd, events, 10, -1);
+   printf("Awake %d\n", n);
    
-   for(int i = 0; i < 10; i++) {
-       if(events[i].data.fd == socket_fd && events[i].events == EPOLLIN) {
+   for(int i = 0; i < n; i++) {
+       if(events[i].data.fd == socket_fd && events[i].events & EPOLLIN) {
         
+        struct epoll_event pevent;
         
         int fd = accept(socket_fd, (struct sockaddr*)&peeraddr, &client_len);
+        
+        
+       
+                
+        pevent.events = EPOLLIN; 
+        pevent.data.fd = fd; 
+        
+   
+   
+   
+   
+        
+        
+        if(epoll_ctl(e_fd, EPOLL_CTL_ADD, fd, &pevent) != 0) {
+       perror("Error in epoll_ctl"); 
+   }
+   
         
         struct client cl; 
         cl.protocol = PPROTOCOL_HTTP11; 
@@ -341,12 +361,42 @@ void worker_event_loop(int socket_fd) {
        handle_context->server_fd = socket_fd; 
        //handle_context->data = &data[0]; 
        printf("Hola\n");
-       if(cl.protocol == PPROTOCOL_HTTP11) {
+       
        handle(handle_context); 
-       } else {
-           printf("WS\n");
+      
+       } else if(events[i].events & EPOLLIN) {
+           printf("c9nnection\n");
+           
+           unsigned char byte[4096];
+               int b = read(events[i].data.fd, byte, 4096);
+               printf("jd %d\n", b);
+               
+           /*
+           
+           struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
+           handle_context->client_fd = events[i].data.fd; 
+           handle_context->server_fd = socket_fd;
+           
+           handle_context->cl = &pcontext.clients[events[i].data.fd - 3]; 
+        
+           
+           if(handle_context->cl->protocol == PPROTOCOL_HTTP11){
+               handle(handle_context);
+           } else if(handle_context->cl->protocol == PPROTOCOL_WS){
+              
+               unsigned char byte[4096];
+               int b = read(events[i].data.fd, byte, 4096);
+               printf("jd %d\n", b);
+               
+               
+               printf("Wrbsocket\n");
+           } else {
+               printf("oTyer\n");
+           }
+           
+           */
        }
-       }
+       
    }
    }
    
