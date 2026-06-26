@@ -66,6 +66,28 @@ void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     
 }
 
+void pbuffer_chain_read_fd(struct pbuffer_chain *buffer_chain, int fd) {
+    
+    if((buffer_chain->tail->fsize - clen) < 0) {
+        
+    
+        struct pbuffer_chain_node bchain_node;
+    
+    int bsize = buffer_chain->len; 
+    
+    bchain_node.size = bsize;
+    bchain_node.fsize = bsize; 
+    bchain_node.p = palloc(buffer_chain->len, buffer_chain->arena); 
+    buffer_chain->tail = &bchain_node;
+    }
+    
+    int findex = (buffer_chain->tail->size - buffer_chain->tail->fsize); 
+    
+    
+    strncpy(&(buffer_chain->tail->p[findex]), c, clen);
+    
+    buffer_chain->tail->fsize = buffer_chain->tail->fsize - clen;
+}
 
 void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
     /*
@@ -900,7 +922,13 @@ struct pbuffer_chain* res(struct res_builder *builder, struct hnd_context* handl
                         pbuffer_chain_write(res_pbuffer_chain, "Sec-WebSocket-Accept: ");
                         pbuffer_chain_write(res_pbuffer_chain, builder->ws_key);
                         pbuffer_chain_write(res_pbuffer_chain, "\r\n\r\n");
+                        
+                        
                         handle_context->cl->protocol = PPROTOCOL_WS;
+                        
+                        
+                        
+                        
                         
                         
 
@@ -991,6 +1019,18 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
     
 }
 
+void handle_ws(void* args) {
+    struct hnd_context *handle_context = (struct hnd_context*)args;
+
+    struct pbuffer_chain* buffer_chain = init_buffer_chain(4096);
+    
+    buffer_chain->tail->p = (unsigned char*)buffer_chain->tail->p;
+    
+    int b = read(handle_context->client_fd, buffer_chain->tail->p, 4096);
+    printf("Read Bytes %d\n ", b);struct hnd_context *handle_context = (struct hnd_context*)args;
+    
+
+}
 
 void handle(void* args) {
     struct parena *arena; 
@@ -1053,7 +1093,6 @@ void handle(void* args) {
     }
     
     struct pbuffer_chain *rbuffer_chain = res(&builder, handle_context); 
-    
     
     
     // current node

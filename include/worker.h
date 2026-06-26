@@ -29,7 +29,7 @@ struct patricia_tree {
 struct pbuffer_chain_node {
     int size;
     int fsize;
-    char* p; 
+    void* p; 
     struct pbuffer_chain_node *next; 
 };
 
@@ -170,6 +170,9 @@ struct pbuffer_chain* res(struct res_builder *builder, struct hnd_context* handl
 void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c);
 
 char* toLowerS(char* s);
+
+void handle_ws(void* args);
+
 
 
 #endif

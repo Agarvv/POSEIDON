@@ -1,6 +1,6 @@
 #define MAX_CLIENTS 50
 #define HSIZE 100
-#define PPROTOCOL_HTTP11 1 
+#define PPROTOCOL_HTTP11 5
 #define PPROTOCOL_WS 2
 
 void init_ctx(); 

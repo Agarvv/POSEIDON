@@ -347,16 +347,16 @@ void worker_event_loop(int socket_fd) {
    }
    
         
-        struct client cl; 
-        cl.protocol = PPROTOCOL_HTTP11; 
         
         
-        pcontext.clients[fd - 3] = cl; 
+        pcontext.clients[fd - 3] = (struct client){
+            PPROTOCOL_HTTP11
+        };
         
        
        struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
        
-       handle_context->cl = &cl; 
+       handle_context->cl = &pcontext.clients[fd - 3];
        handle_context->client_fd = fd; 
        handle_context->server_fd = socket_fd; 
        //handle_context->data = &data[0]; 
@@ -367,11 +367,13 @@ void worker_event_loop(int socket_fd) {
        } else if(events[i].events & EPOLLIN) {
            printf("c9nnection\n");
            
-           unsigned char byte[4096];
-               int b = read(events[i].data.fd, byte, 4096);
-               printf("jd %d\n", b);
-               
-           /*
+           int f = events[i].data.fd; 
+           
+           printf("File Descriptor: %d\n", pcontext.clients[f - 3].protocol); 
+           
+           
+
+           
            
            struct hnd_context *handle_context = malloc(sizeof(struct hnd_context));
            handle_context->client_fd = events[i].data.fd; 
@@ -381,20 +383,18 @@ void worker_event_loop(int socket_fd) {
         
            
            if(handle_context->cl->protocol == PPROTOCOL_HTTP11){
+               
                handle(handle_context);
+               
            } else if(handle_context->cl->protocol == PPROTOCOL_WS){
+               
+              handle_ws(handle_context);
               
-               unsigned char byte[4096];
-               int b = read(events[i].data.fd, byte, 4096);
-               printf("jd %d\n", b);
-               
-               
-               printf("Wrbsocket\n");
            } else {
                printf("oTyer\n");
            }
            
-           */
+           
        }
        
    }
