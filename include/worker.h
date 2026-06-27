@@ -55,6 +55,7 @@ struct res {
     
 };
 
+void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data);
 void handle(void* args);
 
 void process_header(struct pbuffer_chain *buffer_chain, struct header *h, struct res_builder *builder, struct hnd_context* handle_context);

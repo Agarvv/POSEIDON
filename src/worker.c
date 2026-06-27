@@ -66,9 +66,19 @@ void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c) {
     
 }
 
-void pbuffer_chain_read_fd(struct pbuffer_chain *buffer_chain, int fd) {
+
+
+void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
+    /*
+    node->fsize = node->fsize - q; 
+    node->p[(node->size - node->fsize)] = c;
     
-    if((buffer_chain->tail->fsize - clen) < 0) {
+    return &(node->p[node->size - node->fsize]); 
+    */
+}
+
+void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data) {
+   if((buffer_chain->tail->fsize - n) < 0) {
         
     
         struct pbuffer_chain_node bchain_node;
@@ -84,18 +94,9 @@ void pbuffer_chain_read_fd(struct pbuffer_chain *buffer_chain, int fd) {
     int findex = (buffer_chain->tail->size - buffer_chain->tail->fsize); 
     
     
-    strncpy(&(buffer_chain->tail->p[findex]), c, clen);
+    memcpy(buffer_chain->tail->p, data, n); 
     
-    buffer_chain->tail->fsize = buffer_chain->tail->fsize - clen;
-}
-
-void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c) {
-    /*
-    node->fsize = node->fsize - q; 
-    node->p[(node->size - node->fsize)] = c;
-    
-    return &(node->p[node->size - node->fsize]); 
-    */
+    buffer_chain->tail->fsize = buffer_chain->tail->fsize - n;
 }
 
 int handle_req_line(char* method, char* version, char* path, char* body, struct res_builder *builder) {
@@ -1020,15 +1021,30 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
 }
 
 void handle_ws(void* args) {
+    
     struct hnd_context *handle_context = (struct hnd_context*)args;
 
     struct pbuffer_chain* buffer_chain = init_buffer_chain(4096);
     
     buffer_chain->tail->p = (unsigned char*)buffer_chain->tail->p;
     
-    int b = read(handle_context->client_fd, buffer_chain->tail->p, 4096);
-    printf("Read Bytes %d\n ", b);struct hnd_context *handle_context = (struct hnd_context*)args;
+    unsigned char bytes[126];
+    int b = 0;
     
+    while(1) {
+    while(b > 0) {
+    b = read(handle_context->client_fd, bytes, 126);
+    
+    if(bytes > 0) {
+    printf("bytes:dddz %d\n", b);
+    }
+    
+    pbuffer_chain_wn(buffer_chain, 126, &bytes);
+    }
+    
+    
+    }
+
 
 }
 
