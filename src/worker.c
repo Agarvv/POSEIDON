@@ -1021,29 +1021,36 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
 }
 
 void handle_ws(void* args) {
-    
+    printf("hojdjdla");
     struct hnd_context *handle_context = (struct hnd_context*)args;
 
     struct pbuffer_chain* buffer_chain = init_buffer_chain(4096);
     
     buffer_chain->tail->p = (unsigned char*)buffer_chain->tail->p;
     
-    unsigned char bytes[126];
-    int b = 0;
+    int tb = 0; 
+    unsigned char bytes[127];
+    int b = recv(handle_context->client_fd, bytes, 127, MSG_DONTWAIT);
+    tb = tb + b;
     
-    while(1) {
+    pbuffer_chain_wn(buffer_chain, 127, &bytes); 
+    
     while(b > 0) {
-    b = read(handle_context->client_fd, bytes, 126);
+                  b = recv(handle_context->client_fd, bytes, 127, MSG_DONTWAIT);
+                  if(b != -1) {
+                      tb = tb + b; 
+                  }
+                  pbuffer_chain_wn(buffer_chain, 127, &bytes); 
+              }
+    printf("Total Bytes: %d\n", tb);
     
-    if(bytes > 0) {
-    printf("bytes:dddz %d\n", b);
-    }
     
-    pbuffer_chain_wn(buffer_chain, 126, &bytes);
-    }
+    for(int i = 0; i < 127; i++) {
+
+    printf("Bytes: %d\n", ((unsigned char *)buffer_chain->tail->p)[i]);
+}
+
     
-    
-    }
 
 
 }

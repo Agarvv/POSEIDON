@@ -387,8 +387,31 @@ void worker_event_loop(int socket_fd) {
                handle(handle_context);
                
            } else if(handle_context->cl->protocol == PPROTOCOL_WS){
+               handle_ws(handle_context);
                
-              handle_ws(handle_context);
+               /*
+              printf("pe\n");
+              unsigned char bytes[127];
+              
+              
+              struct pbuffer_chain* buffer_chain = init_buffer_chain(4096);
+              
+              
+              int b = recv(handle_context->client_fd, bytes, 127, MSG_DONTWAIT);
+              pbuffer_chain_wn(buffer_chain, bytes, 127); 
+              
+              pbuffer_chain_wn(buffer_chain, )
+              while(b > 0) {
+                  printf("hola\n"); 
+                  b = recv(handle_context->client_fd, bytes, 127, MSG_DONTWAIT);
+                  pbuffer_chain_wn(buffer_chain, bytes, 127); 
+              }
+              
+              printf("Out loop\n"); 
+              
+              */
+             }
+            //  handle_ws(handle_context);
               
            } else {
                printf("oTyer\n");
@@ -397,18 +420,18 @@ void worker_event_loop(int socket_fd) {
            
        }
        
-   }
-   }
+    }
+ }
    
-   while(1);
-}
+  
+
 
 
 int main() {
    init_ctx(); 
    int socket_fd = start_http(); 
    
-   event.events = EPOLLIN; 
+   event.events = EPOLLIN;
    event.data.fd = socket_fd; 
    
    http_hhtable_init();
