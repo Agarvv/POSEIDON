@@ -16,6 +16,7 @@
 #include<ctype.h>
 #include<normalize.h> 
 #include <sys/uio.h>
+#include<ws_handler.h>
 
 // this returns a buffer chain with one node of chunk_size capacity.
 struct pbuffer_chain* init_buffer_chain(int chunk_size) {
@@ -1048,6 +1049,10 @@ void handle_ws(void* args) {
     for(int i = 0; i < 127; i++) {
 
     printf("Bytes: %d\n", ((unsigned char *)buffer_chain->tail->p)[i]);
+    
+    printf("Jumping to C++\n");
+    ws_handler();
+    
 }
 
     
