@@ -1051,7 +1051,7 @@ void handle_ws(void* args) {
     printf("Bytes: %d\n", ((unsigned char *)buffer_chain->tail->p)[i]);
     
     printf("Jumping to C++\n");
-    ws_handler();
+    ws_handler(handle_context, buffer_chain, tb);
     
 }
 
