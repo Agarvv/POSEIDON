@@ -100,6 +100,7 @@ int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_
     std::cout << "Not Exceptional Length" << std::endl; 
     context.len = flen; 
     
+    
     *data = ptr[5]; 
     
     
@@ -114,10 +115,15 @@ int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_
     
     
     
+    contexts.insert({handle_context->client_fd, context});
+    
     // if Not FIN
     if(!(ptr[0] & 0x80)) {
-        
+        context.ptrs.push_back({ flen, data });
     }
+    
+    std::cout << "End of Frames." << std::endl;
+    
     
     
     return 0;
