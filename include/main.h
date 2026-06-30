@@ -1,4 +1,4 @@
-#define MAX_CLIENTS 50
+#define MAX_CLIENTS 4096
 #define HSIZE 100
 #define PPROTOCOL_HTTP11 5
 #define PPROTOCOL_WS 2

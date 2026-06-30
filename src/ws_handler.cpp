@@ -1,3 +1,4 @@
+/*
 #include<iostream>
 #include<stdio.h>
 #include<worker.h>
@@ -7,7 +8,6 @@
 extern "C" {
     
 int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_chain, int len) {
-     
      
     unsigned char* ptr = static_cast<unsigned char*>(buffer_chain->head->p);
     
@@ -20,7 +20,7 @@ int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_
      
      struct ws_frame_context context; 
     
-    /* 
+    
     unsigned char tb = ptr[1]; 
     bool mask = (tb & 0x80);
     int l = (tb & 0x7F); 
@@ -54,27 +54,6 @@ int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_
     }   
     
     printf("Final Len: %d\n", l);
-    
-    */ 
-    
-    // 0000 0000 
-    // ^ FIN 
-    
-    // 0000 0000 
-    //  ^^^ RESERVED
-    
-    // 0000 0000 
-    //      ^^^^ OPCODE 
-    // 0 For frame Continuation, 
-    // 1 For Text,
-    // 2 For Binary,
-    // 3-7 reserved 
-    // 8 close 
-    // 9 Ping 
-    // 0xA Pong
-    // 0xB-0xF Reserved
-    
-    // 67 67 67 67 67 67 67 67 67 67
     
     int opcode = (ptr[0] & 0x0F);
     context.opcode = opcode; 
@@ -115,7 +94,8 @@ int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_
     
     
     
-    contexts.insert({handle_context->client_fd, context});
+    contexts.emplace(handle_context->client_fd, std::move(context));
+    
     
     // if Not FIN
     if(!(ptr[0] & 0x80)) {
@@ -130,3 +110,4 @@ int ws_handler(struct hnd_context *handle_context, struct pbuffer_chain *buffer_
 }
 
 }
+*/

@@ -51,6 +51,21 @@ struct res_builder {
     int err; // 1 when header processing error occurrs
 };
 
+struct ws_frame_data {
+    int len; 
+    unsigned char* ptr;
+};
+
+struct ws_frame {
+    int opcode;
+    int mask;
+    struct pbuffer_chain frame_buffer_chain;
+};
+
+struct ws_context {
+    struct ws_frame frames[4096];
+};
+
 struct res {
     
 };

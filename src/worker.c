@@ -18,6 +18,8 @@
 #include <sys/uio.h>
 #include<ws_handler.h>
 
+struct ws_context websocket_context;
+
 // this returns a buffer chain with one node of chunk_size capacity.
 struct pbuffer_chain* init_buffer_chain(int chunk_size) {
     struct parena arena; 
@@ -1045,17 +1047,51 @@ void handle_ws(void* args) {
               }
     printf("Total Bytes: %d\n", tb);
     
+    //parse 
+    unsigned char* ptr = ((unsigned char*)buffer_chain->tail->p);
     
-    for(int i = 0; i < 127; i++) {
-
-    printf("Bytes: %d\n", ((unsigned char *)buffer_chain->tail->p)[i]);
+    int mask = (ptr[1] & 0x80); 
+    if(!mask) {
+        printf("No Mask. Closing Connection.\n");
+    }
     
-    printf("Jumping to C++\n");
-    ws_handler(handle_context, buffer_chain, tb);
+    struct pbuffer_chain* frame_bchain = init_buffer_chain(4096); 
     
-}
-
+    (struct ws_frame*)frame_bchain->head->p;
     
+    struct ws_frame frame; 
+    
+    int opcode = (ptr[0] & 0x0F);
+    frame.opcode = opcode; 
+    
+    
+    
+    int length = 0; 
+    int flen = ptr[1] & 0x7F;
+    unsigned char* data; 
+    
+    if(flen == 126) {
+        length = flen + ptr[2] + ptr[3]; 
+        printf("Exceptional Length.\n");
+        *data = ptr[7]; 
+    } else if (flen == 127) {
+        length = flen + ptr[2] + ptr[3]+ ptr[4] + ptr[5] + ptr[6] + ptr[7] + ptr[8] + ptr[9]; 
+        *data = ptr[13]; 
+        
+        printf("Exceptional Length.\n");
+    }
+    
+    length = flen; 
+    printf("NOT Exceptional Length. %d\n", length);
+    
+    
+    
+    *data = ptr[5]; 
+    
+    // struct ws_frame_data frame_data; 
+    // frame_data.ptr = data; 
+    // frame_data.len = length
+    // pbuffer_chain_insert(frame_bchain, frame_data)
 
 
 }
