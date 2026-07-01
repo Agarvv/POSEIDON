@@ -102,8 +102,26 @@ void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data) {
     buffer_chain->tail->fsize = buffer_chain->tail->fsize - n;
 }
 
-void* pbuffer_chain_insert(struct pbuffer_chain *buffer_chain, void* data) {
+void* pbuffer_chain_insert(struct pbuffer_chain *buffer_chain, void* data, int data_size) {
+    if((buffer_chain->tail->fsize - data_size) < 0) {
+        
     
+        struct pbuffer_chain_node bchain_node;
+    
+    int bsize = buffer_chain->len; 
+    
+    bchain_node.size = bsize;
+    bchain_node.fsize = bsize; 
+    bchain_node.p = palloc(buffer_chain->len, buffer_chain->arena); 
+    buffer_chain->tail = &bchain_node;
+    }
+    
+    int findex = (buffer_chain->tail->size - buffer_chain->tail->fsize); 
+    
+    
+    ((void**)buffer_chain->tail->p)[findex] = data; 
+    
+    buffer_chain->tail->fsize = buffer_chain->tail->fsize - data_size;
 }
 
 int handle_req_line(char* method, char* version, char* path, char* body, struct res_builder *builder) {
@@ -1025,6 +1043,12 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
     
     }
     
+} 
+
+void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, unsigned char* payload, int len) {
+    for(int i = 0; i < len; i++) {
+        printf("%d by \n", payload[i]);
+    }
 }
 
 void handle_ws(void* args, struct ws_context *websocket_context) {
@@ -1068,23 +1092,28 @@ void handle_ws(void* args, struct ws_context *websocket_context) {
     int length = 0; 
     int flen = ptr[1] & 0x7F;
     unsigned char* data; 
+    unsigned char dmask[4];
     
     if(flen == 126) {
-        length = flen + ptr[2] + ptr[3]; 
-        printf("Exceptional Length.\n");
-        *data = ptr[7]; 
+    length = flen + ptr[2] + ptr[3]; 
+    printf("Exceptional Length.\n");
+    *data = ptr[8];         
+    memcpy(dmask, &ptr[4], 4); 
+    
     } else if (flen == 127) {
-        length = flen + ptr[2] + ptr[3]+ ptr[4] + ptr[5] + ptr[6] + ptr[7] + ptr[8] + ptr[9]; 
-        *data = ptr[13]; 
-        
-        printf("Exceptional Length.\n");
+    length = flen + ptr[2] + ptr[3] + ptr[4] + ptr[5] + ptr[6] + ptr[7] + ptr[8] + ptr[9]; 
+    memcpy(dmask, &ptr[10], 4); 
+    *data = ptr[14];            
+    
+    printf("Exceptional Length.\n");
     }
     
+    memcpy(dmask, &ptr[2], 4);
     length = flen; 
     printf("NOT Exceptional Length. %d\n", length);
     
     
-    data = &ptr[5];
+    data = &ptr[6];
     
     
     
@@ -1095,17 +1124,53 @@ void handle_ws(void* args, struct ws_context *websocket_context) {
             frame_data.len = length;
             frame_data.ptr = data;
             
-            pbuffer_chain_insert(websocket_context->frames[handle_context->client_fd - 3].frame_buffer_chain, &frame_data); 
+            pbuffer_chain_insert(websocket_context->frames[handle_context->client_fd - 3].frame_buffer_chain, &frame_data, sizeof(&frame_data)); 
             
+            websocket_context->frames[handle_context->client_fd - 3].frames++;
             break;
         }
         // text
         case 0x1: {
+            struct pbuffer_chain *frame_buffer_chain = init_buffer_chain(4096); 
+            
+            (struct ws_frame*)frame_buffer_chain->head->p;
+            
+            struct ws_frame frame;
+            frame.opcode = opcode;
+            frame.mask = dmask;
+            frame.frame_buffer_chain = frame_buffer_chain;
+            frame.frames = 1;
+            
+            struct ws_frame_data frame_data;
+            frame_data.len = length;
+            frame_data.ptr = data;
+            
+            pbuffer_chain_insert(frame_buffer_chain, &frame_data, sizeof(&frame_data)); 
+            
+            websocket_context->frames[handle_context->client_fd - 3] = frame;
             
             break;
         }
         // binary
         case 0x2: {
+            struct pbuffer_chain *frame_buffer_chain = init_buffer_chain(4096); 
+            
+            (struct ws_frame*)frame_buffer_chain->head->p;
+            
+            struct ws_frame frame;
+            frame.opcode = opcode;
+            frame.mask = dmask;
+            frame.frame_buffer_chain = frame_buffer_chain;
+            frame.frames = 1;
+            
+            struct ws_frame_data frame_data;
+            frame_data.len = length;
+            frame_data.ptr = data;
+            
+            
+            pbuffer_chain_insert(frame_buffer_chain, &frame_data, sizeof(&frame_data)); 
+            
+            websocket_context->frames[handle_context->client_fd - 3] = frame;
             
             break;
         }
@@ -1125,6 +1190,55 @@ void handle_ws(void* args, struct ws_context *websocket_context) {
     
     if(ptr[0] & 0x80) {
         printf("End.\n");
+        
+        struct ws_frame_data** cast = (struct ws_frame_data**)(websocket_context->frames[handle_context->client_fd - 3].frame_buffer_chain->head->p);
+        
+        struct ws_frame_data* fdata = (struct ws_frame_data*)*(cast);
+        
+        struct pbuffer_chain_node* fr_node; 
+        fr_node = websocket_context->frames[handle_context->client_fd - 3].frame_buffer_chain->head;
+        
+        int l = 0; 
+       
+       
+       
+        while(fr_node->fsize != 0) {
+            printf("jsjjdjeje: %d\n", l);
+            l = (fr_node->size - fr_node->fsize) / sizeof(struct ws_frame_data*); 
+            
+            printf("ele pene: %d\n", l);
+            if(fr_node->next == NULL) {
+                printf("Exit\n");
+                break;
+            }
+            fr_node = fr_node->next;
+        }
+        
+        int tl = 0; 
+        printf(" fkkf: %d\n", l);
+        
+        for(int i = 0; i < l; i++) {
+            tl = tl + fdata[i].len; 
+        }
+        
+        printf("Total Len: %d\n", tl);
+        
+        
+        unsigned char unmasked[fdata->len]; 
+        
+        
+        
+        for(int i = 0; i < websocket_context->frames[handle_context->client_fd - 3].frames; i++) {
+            
+        
+        
+        for(int i = 0; i < fdata->len; i++) {
+            unmasked[i] = fdata->ptr[i] ^ websocket_context->frames[handle_context->client_fd - 3].mask[i % 4];
+            
+        }
+         
+    }
+        ws_on_message(handle_context, &(websocket_context->frames[handle_context->client_fd - 3]), unmasked, tl);
     }
     
 }
