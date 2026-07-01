@@ -43,6 +43,8 @@ struct pbuffer_chain {
 
 void* pbuffer_chain_w(struct pbuffer_chain *buffer_chain, struct pbuffer_chain_node *node, int q, void* c);
 
+void* pbuffer_chain_insert(struct pbuffer_chain *buffer_chain, void* data); 
+
 struct res_builder {
     int method; 
     int connection; 
@@ -59,7 +61,7 @@ struct ws_frame_data {
 struct ws_frame {
     int opcode;
     int mask;
-    struct pbuffer_chain frame_buffer_chain;
+    struct pbuffer_chain *frame_buffer_chain;
 };
 
 struct ws_context {
@@ -187,7 +189,7 @@ void pbuffer_chain_write(struct pbuffer_chain *buffer_chain, char* c);
 
 char* toLowerS(char* s);
 
-void handle_ws(void* args);
+void handle_ws(void* args, struct ws_context *websocket_context);
 
 
 

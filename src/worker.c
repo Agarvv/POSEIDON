@@ -102,6 +102,10 @@ void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data) {
     buffer_chain->tail->fsize = buffer_chain->tail->fsize - n;
 }
 
+void* pbuffer_chain_insert(struct pbuffer_chain *buffer_chain, void* data) {
+    
+}
+
 int handle_req_line(char* method, char* version, char* path, char* body, struct res_builder *builder) {
     int gh = phhash_djb2("GET"); 
     int hh = phhash_djb2("HEAD"); 
@@ -1023,7 +1027,7 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
     
 }
 
-void handle_ws(void* args) {
+void handle_ws(void* args, struct ws_context *websocket_context) {
     printf("hojdjdla");
     struct hnd_context *handle_context = (struct hnd_context*)args;
 
@@ -1055,14 +1059,9 @@ void handle_ws(void* args) {
         printf("No Mask. Closing Connection.\n");
     }
     
-    struct pbuffer_chain* frame_bchain = init_buffer_chain(4096); 
     
-    (struct ws_frame*)frame_bchain->head->p;
-    
-    struct ws_frame frame; 
     
     int opcode = (ptr[0] & 0x0F);
-    frame.opcode = opcode; 
     
     
     
@@ -1085,15 +1084,49 @@ void handle_ws(void* args) {
     printf("NOT Exceptional Length. %d\n", length);
     
     
+    data = &ptr[5];
     
-    *data = ptr[5]; 
     
-    // struct ws_frame_data frame_data; 
-    // frame_data.ptr = data; 
-    // frame_data.len = length
-    // pbuffer_chain_insert(frame_bchain, frame_data)
-
-
+    
+    switch(opcode) {
+        // continuation
+        case 0x0: {
+            struct ws_frame_data frame_data;
+            frame_data.len = length;
+            frame_data.ptr = data;
+            
+            pbuffer_chain_insert(websocket_context->frames[handle_context->client_fd - 3].frame_buffer_chain, &frame_data); 
+            
+            break;
+        }
+        // text
+        case 0x1: {
+            
+            break;
+        }
+        // binary
+        case 0x2: {
+            
+            break;
+        }
+        //close
+        case 0x8: {
+            break;
+        }
+        // ping
+        case 0x9: {
+            break;
+        }
+        //pong
+        case 0xA: {
+            break;
+        }
+    }
+    
+    if(ptr[0] & 0x80) {
+        printf("End.\n");
+    }
+    
 }
 
 void handle(void* args) {

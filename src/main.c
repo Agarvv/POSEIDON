@@ -303,7 +303,8 @@ void fork_workers(int socket_fd) {
 
 void worker_event_loop(int socket_fd) {
 
-   struct ctx pcontext; 
+   struct ctx pcontext;
+   struct ws_context websocket_context;
    
    socklen_t client_len = sizeof(peeraddr); 
    struct epoll_event events[10];
@@ -387,32 +388,11 @@ void worker_event_loop(int socket_fd) {
                handle(handle_context);
                
            } else if(handle_context->cl->protocol == PPROTOCOL_WS){
-               handle_ws(handle_context);
+               handle_ws(handle_context, &websocket_context);
                
-               /*
-              printf("pe\n");
-              unsigned char bytes[127];
-              
-              
-              struct pbuffer_chain* buffer_chain = init_buffer_chain(4096);
-              
-              
-              int b = recv(handle_context->client_fd, bytes, 127, MSG_DONTWAIT);
-              pbuffer_chain_wn(buffer_chain, bytes, 127); 
-              
-              pbuffer_chain_wn(buffer_chain, )
-              while(b > 0) {
-                  printf("hola\n"); 
-                  b = recv(handle_context->client_fd, bytes, 127, MSG_DONTWAIT);
-                  pbuffer_chain_wn(buffer_chain, bytes, 127); 
-              }
-              
-              printf("Out loop\n"); 
-              
-              */
+
              }
-            //  handle_ws(handle_context);
-              
+            
            } else {
                printf("oTyer\n");
            }
