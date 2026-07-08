@@ -1045,10 +1045,81 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
     
 } 
 
+// BRTGP Application Protocol 
 void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, unsigned char* payload, int len) {
+    int offset = 0; 
+    
+    int event = payload[offset]; 
+    offset += 1; 
+    
+    int fields = 0; 
+    
+    
+    switch(event) {
+        // JOIN_ROOM 
+        case 1: {
+            struct btrgp_field fields[2];
+            
+            
+            int* room_id = (int*)payload[offset];
+            
+            // skip user id because its non relevant in this case 
+            offset += 8;
+            
+            if(room_id == 0) {
+                int* payload_offset = 0; 
+                unsigned char sig; 
+                
+                // Create Room
+                
+                
+                sig = payload[offset];
+                
+                
+                offset += 1; 
+                int* le = (int*)payload[offset];
+                
+                offset += 4;
+                
+                
+                for(int i = 0; sig != 0xFF; i++) {
+                    printf("Create Room %d\n", sig);
+                        unsigned char* d = &payload[offset]; 
+                        
+                        fields[i].data = d;
+                        fields[i].len = len;
+                        
+                        sig = payload[len + offset];
+                }
+                    
+                
+                for(int i = 0; i <  2; i ++) {
+                    
+                    for(int p = 0; p < fields[i].len; p++) {
+                        printf("Data %d, Is %d\n", i, fields[i].data[p]); 
+                    }
+                }
+                
+                
+            }
+            
+            break;
+        }
+        
+        
+        
+        
+        default: {
+            printf("None\n");
+            break; 
+        }
+    }
+    
     for(int i = 0; i < len; i++) {
         printf("%d by \n", payload[i]);
     }
+    
+    
 }
 
 void handle_ws(void* args, struct ws_context *websocket_context) {

@@ -58,6 +58,11 @@ struct ws_frame_data {
     unsigned char* ptr;
 };
 
+struct btrgp_field {
+    int len;
+    unsigned char* data;
+};
+
 struct ws_frame {
     int opcode;
     unsigned char* mask;
@@ -71,6 +76,18 @@ struct ws_context {
 };
 
 struct res {
+    
+};
+
+struct player {
+    int id;
+    char* username;
+    char* pfp;
+    
+};
+
+struct room {
+    int id; 
     
 };
 
