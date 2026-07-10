@@ -1074,23 +1074,35 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
                 
                 
                 sig = payload[offset];
+                offset += 1;
                 
-                
-                offset += 1; 
-                int* le = (int*)payload[offset];
-                
-                offset += 4;
                 
                 
                 for(int i = 0; sig != 0xFF; i++) {
                     printf("Create Room %d\n", sig);
+                    
+                    int le = *(int*)(&payload[offset]); 
+                    printf("Length djdj%d\n", le);
+                    
+                    offset += 4; 
+                    
+
+                    
                         unsigned char* d = &payload[offset]; 
+                        offset += 4;
+                        
+                                            
+                    printf("eieiei Room %d\n", payload[offset]);
                         
                         fields[i].data = d;
-                        fields[i].len = len;
+                        fields[i].len = le;
                         
-                        sig = payload[len + offset];
-                }
+                        sig = payload[offset];
+                        offset += 1;
+                        
+                        
+                        
+                }  
                     
                 
                 for(int i = 0; i <  2; i ++) {
