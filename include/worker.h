@@ -83,12 +83,13 @@ struct player {
     int id;
     char* username;
     char* pfp;
-    
+    int fd;
 };
 
 struct room {
     int id; 
-    
+    int player_id_c;
+    struct player players[26];
 };
 
 void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data);

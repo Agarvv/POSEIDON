@@ -1045,8 +1045,20 @@ void process_header(struct pbuffer_chain *buffer_chain,  struct header *h, struc
     
 } 
 
+
+struct pbuffer_chain* room_buffer_chain = NULL;
+
 // BRTGP Application Protocol 
 void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, unsigned char* payload, int len) {
+    
+    if(room_buffer_chain == NULL) {
+        room_buffer_chain = init_buffer_chain(4096);
+        
+        // room id counter
+        *(int*)room_buffer_chain->head->p = 0;
+    }
+    
+    
     int offset = 0; 
     
     int event = payload[offset]; 
@@ -1111,8 +1123,32 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
                         printf("Data %d, Is %d\n", i, fields[i].data[p]); 
                     }
                 }
+            
+            struct room r;
+            r.player_id_c = 0; 
+            
+            struct player p;
+            p.id = r.player_id_c; 
+            p.username = fields[0].data; 
+            p.pfp = fields[1].data; 
+            p.fd = handle_context->client_fd; 
+            
+            r.id = *(int*)room_buffer_chain->head->p; 
+            r.players[r.id] = p;
+            r.player_id_c++; 
+            
+            unsigned char response[] = 
+            {
+                0x00, // No Error
+                r.id,
+                r.players[r.id].id,
                 
-                
+            };
+            
+        write(handle_context->client_fd, response, sizeof(response)); 
+           
+           printf("Response Sendt\n");
+            
             }
             
             break;
