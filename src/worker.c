@@ -1055,7 +1055,8 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
         room_buffer_chain = init_buffer_chain(4096);
         
         // room id counter
-        *(int*)room_buffer_chain->head->p = 0;
+        *(int*)room_buffer_chain->head->p = 1;
+        room_buffer_chain->head->fsize -= 4;
     }
     
     
@@ -1078,6 +1079,7 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
             // skip user id because its non relevant in this case 
             offset += 8;
             
+            // means to create room
             if(room_id == 0) {
                 int* payload_offset = 0; 
                 unsigned char sig; 
@@ -1136,7 +1138,11 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
             r.id = *(int*)room_buffer_chain->head->p; 
             r.players[r.id] = p;
             r.player_id_c++; 
+
+            // insert room to buffer chain
+            pbuffer_chain_insert(room_buffer_chain, &r, sizeof(r));
             
+
             unsigned char response[] = 
             {
                 0x00, // No Error
@@ -1144,12 +1150,41 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
                 r.players[r.id].id,
                 
             };
+
+            // write WS frame with inner BTRTGP indicating that
+            // all is OK and return user and room id as BTRGP Payload
             
-        write(handle_context->client_fd, response, sizeof(response)); 
-           
-           printf("Response Sendt\n");
+
+            printf("Response Sendt\n");
             
+         } else {
+            // search room by id and add user to room
+            if(*(int*)room_buffer_chain->head->p < room_id) {
+                // WS frame with inner BTRTGP indicating error.
+                printf("No such Room\n");
             }
+           
+            struct player p; 
+            p.id = ((struct room*)room_buffer_chain->tail->p)[*room_id].player_id_c;
+            printf("Player ID %d\n", p.id);
+            p.username = fields[0].data;
+            p.pfp = fields[1].data;
+            p.fd = handle_context->client_fd;
+           
+            // to joining player fd, send WS frame with inner BTRTGP indicating that all is OK 
+            // and return users, user id and room id as BTRGP Payload
+
+            // for other players, send WS frame with inner BTRTGP indicating that a new player has joined the room
+            // and in the payload the user data.
+         }
+
+        
+            
+            break;
+        }
+        
+        // Reconnection.
+        case 2: {
             
             break;
         }
