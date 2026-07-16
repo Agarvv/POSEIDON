@@ -1068,12 +1068,17 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
     int fields = 0; 
     
     
+    // receives user id and room id.
+    // if room id create new room data structure, add user to it and mark user as owner
+    // else if room id not zero, add user to room.
+    // in first case, return message indicating that and user id, room id as payload
+    // in second case, to joining user id, return message indicating sucess and all users in the room as payload
+    // to other users already in the room, return message with event USER_JOIN and in payload, the joining user.
     switch(event) {
         // JOIN_ROOM 
         case 1: {
             struct btrgp_field fields[2];
-            
-            
+                       
             int* room_id = (int*)payload[offset];
             
             // skip user id because its non relevant in this case 
@@ -1183,12 +1188,71 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
             break;
         }
         
-        // Reconnection.
-        case 2: {
-            
+    
+
+
+
+        // message
+
+        // receives room id, user id as S and a payload with the message data.
+        // broadcast to all players in the team identified by f(S) the message data.
+        case 3: {
+            int room_id = *(int*)payload[offset];
+            offset += 4;
+            int user_id = *(int*)payload[offset];
+            offset += 4;
+
+
+            break;
+        }
+
+        // draw
+
+        // receives room id, user id as S and a payload with the drawing data.
+        // broadcast to all players in the team identified by f(S) the drawing data.
+        case 4: {
+            break;
+        }
+
+        // vote
+
+        // receives room id and an user id as S identifying the team to vote for
+        // get team by f(S) and increment team votes.
+        case 5: {
             break;
         }
         
+        // start game
+
+        // receives room id and user id, payload none.
+        // gets room by id, if user is owner,
+        // make teams and mark the game as started
+        // return sucessfull BTRGP message to all plauyers.
+        case 6: {
+            int* room_id = (int*)payload[offset];
+            offset += 4;
+            int* user_id = (int*)payload[offset];
+            offset += 4;
+
+            struct room *r = &((struct room*)room_buffer_chain->tail->p)[*room_id];
+
+          if (((struct room*)room_buffer_chain->tail->p)[*room_id].owner_id == *user_id) {
+                printf("Starting Game\n");
+                // make teams data structure 
+                r->teams = init_buffer_chain(4096);
+
+                *((int*)r->teams->tail->p) = 0;
+                r->teams->tail->fsize -= 4;
+
+                // loop users and make teams 
+                
+          } else {
+                printf("Not Owner\n");
+          }
+
+
+            break;
+        }
         
         
         

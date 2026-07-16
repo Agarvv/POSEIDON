@@ -89,7 +89,9 @@ struct player {
 struct room {
     int id; 
     int player_id_c;
+    int owner_id;
     struct player players[26];
+    struct pbuffer_chain *teams;
 };
 
 void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data);
