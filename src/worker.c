@@ -1143,6 +1143,8 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
             r.id = *(int*)room_buffer_chain->head->p; 
             r.players[r.id] = p;
             r.player_id_c++; 
+            r.team_id_c = 0;
+            r.owner_id = p.id;
 
             // insert room to buffer chain
             pbuffer_chain_insert(room_buffer_chain, &r, sizeof(r));
@@ -1219,6 +1221,22 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
         // receives room id and an user id as S identifying the team to vote for
         // get team by f(S) and increment team votes.
         case 5: {
+            int* room_id = &payload[offset];
+            offset += 4;
+            
+            int* user_id = &payload[offset];
+            offset += 4;
+            
+            int* team_id = &payload[offset];
+            offset += 4;
+            
+            struct room *r = &((struct room*)room_buffer_chain->tail->p)[*room_id];
+            
+            struct team *t = &r->teams[*team_id];
+            
+            t->votes++;
+            
+            // response
             break;
         }
         
@@ -1229,22 +1247,62 @@ void ws_on_message(struct hnd_context* handle_context, struct ws_frame* frame, u
         // make teams and mark the game as started
         // return sucessfull BTRGP message to all plauyers.
         case 6: {
-            int* room_id = (int*)payload[offset];
+            
+            int* room_id = &payload[offset];
             offset += 4;
-            int* user_id = (int*)payload[offset];
+            
+            int* user_id = &payload[offset];
+            printf("sididis %d \n", *user_id);
             offset += 4;
+            
+            
 
             struct room *r = &((struct room*)room_buffer_chain->tail->p)[*room_id];
-
+            
+            
+          
+          printf("s8ii %d\n", ((struct room*)room_buffer_chain->tail->p)[*room_id].owner_id); 
+          
           if (((struct room*)room_buffer_chain->tail->p)[*room_id].owner_id == *user_id) {
                 printf("Starting Game\n");
-                // make teams data structure 
+                
+                /* 
                 r->teams = init_buffer_chain(4096);
 
                 *((int*)r->teams->tail->p) = 0;
                 r->teams->tail->fsize -= 4;
+                */
+            
 
                 // loop users and make teams 
+                struct player pu[3];
+                int cu = 0; 
+                
+                printf("sisiskenfkdk %d\n", r->player_id_c);
+                if((r->player_id_c % 2) == 0) {
+                    pu[2] = r->players[r->player_id_c];
+                }
+                
+                while(cu != r->player_id_c) {
+                    for(int i = 0; i < 2; i++) {
+                        pu[cu] = r->players[cu]; 
+                        cu++;
+                    }
+                    
+                    struct team t;
+                    t.id = r->team_id_c; 
+                    r->team_id_c++;
+                    t.players[0] = pu[cu - 1];
+                    t.players[1] = pu[cu];
+                    t.players[2] = pu[2];
+                    t.votes = 0; 
+                    r->teams[t.id] = t;
+            
+                
+                }
+                
+                // write response.
+                printf("OK \n");
                 
           } else {
                 printf("Not Owner\n");

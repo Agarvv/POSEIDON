@@ -79,6 +79,7 @@ struct res {
     
 };
 
+
 struct player {
     int id;
     char* username;
@@ -86,13 +87,24 @@ struct player {
     int fd;
 };
 
+
+
+struct team {
+  int id;
+  int votes;
+  struct player players[3]; 
+  
+};
+
 struct room {
     int id; 
     int player_id_c;
+    int team_id_c;
     int owner_id;
     struct player players[26];
-    struct pbuffer_chain *teams;
+    struct team teams[13];
 };
+
 
 void pbuffer_chain_wn(struct pbuffer_chain *buffer_chain, int n, void* data);
 void handle(void* args);
