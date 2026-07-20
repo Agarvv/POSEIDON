@@ -263,19 +263,18 @@ int start_http() {
     
     ipv4_addr.s_addr = htonl(INADDR_ANY);
     
-    
     socket_addr.sin_family = AF_INET;
-    int port = 8080;
-    char* env_p = getenv("PORT"); 
-    if(env_p != NULL) {
-        printf("PORT OK"); 
-        fflush(stdout);
-        port = atoi(env_p);
-    }
     
+
+    int port = 8080; 
+    char* env_p = getenv("PORT");
+    if (env_p != NULL) {
+        port = atoi(env_p); 
+    }
+
+
     socket_addr.sin_port = htons(port); 
     socket_addr.sin_addr = ipv4_addr;
-    
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     
@@ -291,6 +290,7 @@ int start_http() {
     
     return socket_fd; 
 }
+
 
 void fork_workers(int socket_fd) {
     for(int i = 0; i < 8; i++){
