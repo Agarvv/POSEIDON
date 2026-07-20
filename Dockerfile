@@ -1,9 +1,14 @@
-FROM gcc:latest
+FROM gcc:13.2.0 AS builder
 
 WORKDIR /app
 
-COPY . .
 
-RUN gcc main.c -o main
+COPY Makefile .
+COPY src/ ./src/
+COPY include/ ./include/
+
+
+RUN make
+
 
 CMD ["./main"]
