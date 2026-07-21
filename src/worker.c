@@ -1520,12 +1520,15 @@ void handle_ws(void* args, struct ws_context *websocket_context) {
 }
 
 void handle(void* args) {
-    struct parena *arena; 
-    pinit(arena); 
+    printf("Handling Request.\n");
+    //struct parena *arena; 
+    
+    //pinit(arena); 
+    
     // char* data = palloc(5000, arena); 
 
-    int upgrade = 0;
-    char* sec_ws_key;
+    /* 
+    
     struct pbuffer_chain res_buffer_chain;
     struct pbuffer_chain_node node; 
     node.size = 5000;
@@ -1534,24 +1537,28 @@ void handle(void* args) {
     node.p = palloc(5000, arena); 
     node.next = NULL;
     
-    res_buffer_chain.head = &node;
-    res_buffer_chain.len = 5000;
+    */
+    
+    
+    struct pbuffer_chain *res_buffer_chain = init_buffer_chain(4096);
+    
+    
+   // res_buffer_chain.head = &node;
+   // res_buffer_chain.len = 5000;
 
     struct hnd_context *handle_context = (struct hnd_context*)args;
-    handle_context->data = node.p; 
+    
+    handle_context->data = res_buffer_chain->head->p;
     
     
     
-   
-   printf("Data: 1286713165 %s  \n", handle_context->data);
-   fflush(stdout);
-   
 
     //insert(handle_context->client_fd);
     int b = 0; 
     
     
     read(handle_context->client_fd, handle_context->data, 5000);
+    
     
 
     /*
@@ -1560,9 +1567,11 @@ void handle(void* args) {
     
     // normalize(handle_context->data);
     
-    
+    printf("Checkpoint 1.\n");
     struct request req;
+    
     parse(handle_context->data, &req);
+    printf("Checkpoint 2.\n");
     
     struct res_builder builder; 
     builder.err = 0;

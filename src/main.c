@@ -409,18 +409,30 @@ void worker_event_loop(int socket_fd) {
 
 
 int main() {
+    
+    fprintf(stderr, "=== SERVER STARTING ===\n");
+fflush(stderr);
+
    init_ctx(); 
    int socket_fd = start_http(); 
    
    event.events = EPOLLIN;
    event.data.fd = socket_fd; 
    
+   fprintf(stderr, "=== SERVER STARTED ===\n");
+fflush(stderr);
+   
    http_hhtable_init();
    
-   route(PMETHOD_GET, "/main");
+   fprintf(stderr, "=== POSEIDON HTABLE INITIALIZED ===\n");
+fflush(stderr);
+   
+   //route(PMETHOD_GET, "/main");
    
    fork_workers(socket_fd);
    
+   fprintf(stderr, "=== WORKERS STARTED ===\n");
+fflush(stderr);
    while(1);
    return 0; 
 }
