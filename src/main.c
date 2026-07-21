@@ -201,9 +201,10 @@ void htable_insert(char* s, char* (*f)(), char* d) {
             }
         }
     } 
-     
+     /* 
     printf("%d\n", n);
         fflush(stdout);
+        */
      htable_entries[n].f = f;
      htable_entries[n].hname = s;
      htable_entries[n].d = d; 
@@ -361,17 +362,17 @@ void worker_event_loop(int socket_fd) {
        handle_context->client_fd = fd; 
        handle_context->server_fd = socket_fd; 
        //handle_context->data = &data[0]; 
-       printf("Hola\n");
        
        handle(handle_context); 
       
        } else if(events[i].events & EPOLLIN) {
-           printf("c9nnection\n");
+           
            
            int f = events[i].data.fd; 
            
+           /* 
            printf("File Descriptor: %d\n", pcontext.clients[f - 3].protocol); 
-           
+           */
            
 
            
